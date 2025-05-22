@@ -1,0 +1,330 @@
+{
+  "date_range": {
+    "start_date": "2025-06-09",
+    "end_date": "2025-06-21"
+  },
+  "cte_events": [
+    {
+      "category_name": "GMA Series",
+      "description": "Join our GMA Series, a dynamic suite of virtual events designed to foster professional development for faculty and staff at Texas A&M University. Participate in enriching dialogues that focus on aligning expectations, promoting professional growth, and assessing understanding. These sessions will equip you with advanced strategies to enhance your career and contribute to a vibrant academic community. Sign up today and capitalize on this opportunity to learn, grow, and excel. Embrace the future of academia with the GMA Series!",
+      "events": [
+        {
+          "event_name": "GMA | Aligning Expectations | Monday, June 9, 11:30am-1:00 Pm | Virtual",
+          "event_link": "https://calendar.tamu.edu/cte/event/354501-gma-aligning-expectations-monday-june-9-1130am-100-pm",
+          "event_date": "Monday, June 9, 2025",
+          "event_time": "11:30am - 1:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "",
+          "event_registration_link": "https://gradconnect.tamu.edu/register/?id=70972632-630d-43a4-82ba-2948acc7799f",
+          "event_description": ""
+        },
+        {
+          "event_name": "GMA | Promoting Professional Development | Wednesday, June 11, 1:00 Pm-2:30 Pm | Virtual",
+          "event_link": "https://calendar.tamu.edu/cte/event/354502-gma-promoting-professional-development-wednesday-june",
+          "event_date": "Wednesday, June 11, 2025",
+          "event_time": "1:00pm - 2:30pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "",
+          "event_registration_link": "https://gradconnect.tamu.edu/register/?id=a26a28dc-c19f-42f9-a72b-765810ee7e90",
+          "event_description": ""
+        },
+        {
+          "event_name": "GMA | Assessing Understanding | Tuesday, June 17, 9:00-10:30 Am | Virtual",
+          "event_link": "https://calendar.tamu.edu/cte/event/354503-gma-assessing-understanding-tuesday-june-17-900-1030-",
+          "event_date": "Tuesday, June 17, 2025",
+          "event_time": "9:00am - 10:30am CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "",
+          "event_registration_link": "https://gradconnect.tamu.edu/register/?id=48558d2d-7004-4bef-8dd2-56f009a51848",
+          "event_description": ""
+        }
+      ]
+    },
+    {
+      "category_name": "Digital Accessibility Series",
+      "description": "\"Join the Digital Accessibility Series at Texas A&M University, a pivotal exploration into the world of digital content accessibility. These events illuminate the necessity of inclusive design and the legal mandates surrounding it. By attending, faculty and staff will acquire knowledge and skills to ensure all digital resources are accessible to every student. Don't miss out on this opportunity to champion inclusivity and boost your digital proficiency. Sign up today and contribute to an accessible learning environment for all!\"",
+      "events": [
+        {
+          "event_name": "Digital Accessibility: An Overview",
+          "event_link": "https://calendar.tamu.edu/cte/event/354705-digital-accessibility-an-overview",
+          "event_date": "Wednesday, June 11, 2025",
+          "event_time": "9:00am - 10:00am CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Carlos Perez, Center for Teaching Excellence\nDr. Jamie Thompson, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44844",
+          "event_description": "This session emphasizes the importance of digital accessibility and its impact on ensuring all students have access to content.The Final Rule, approved by the Department of Justice, requires that all digital content comply with the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA standards by April 24, 2026. This workshop will cover key accessibility standards and their impact on course content. Participants will also explore various assistive technologies that support students with disabilities. By the end of the session, you will have the knowledge and awareness needed to navigate the digital accessibility landscape.\n\nLearning Outcomes: Participants will be able to:\n1. Describe the importance of digital accessibility.\n2. Review accessibility standards.\n3. Evaluate the connection between some assistive technologies and content creation.\n\nRegister Here: https://ers.tamu.edu/register.aspx?scheduleid=44844"
+        },
+        {
+          "event_name": "Digital Accessibility Series \u2013 Session 1: What Is Digital Accessibility?",
+          "event_link": "https://calendar.tamu.edu/cte/event/353455-digital-accessibility-series-session-1-what-is",
+          "event_date": "Wednesday, June 11, 2025",
+          "event_time": "1:00pm - 1:45pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Carlos Perez, Center for Teaching Excellence\nDr. Jamie Thompson, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44784",
+          "event_description": "Back by popular demand, this series from the Spring 2025 semester returns. The recent Title II revision (the Final Rule) mandates that all digital content meet accessibility standards, ensuring usability for all users. This first session emphasizes the importance of digital accessibility and its impact on ensuring all students have access to content. The Final Rule, approved by the Department of Justice, requires that all digital content comply with the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA standards by April 24, 2026.\n\nThis workshop will cover key accessibility standards and their impact on course content. Participants will also explore various assistive technologies that support students with disabilities. By the end of the session, you will have the knowledge and awareness needed to navigate the digital accessibility landscape.\n\nLearning Outcomes: Participants will be able to\u2026\n1) Describe the importance of digital accessibility.\n2) Review accessibility standards.\n3) Evaluate the connection between some assistive technologies and content creation.\n\nRegister Here: https://ers.tamu.edu/register.aspx?scheduleid=44784"
+        }
+      ]
+    },
+    {
+      "category_name": "Canvas Workshops",
+      "description": "Unleash the full potential of Canvas at Texas A&M's Canvas Workshops! This series is designed to refine your skills, ranging from gradebook creation to course organization. Learn to streamline your teaching processes, increase course consistency, and enhance student accessibility. Don't miss this opportunity to upgrade your Canvas proficiency and enrich your teaching methodology. Sign up today and embrace a more efficient and effective educational experience!",
+      "events": [
+        {
+          "event_name": "Canvas Gradebook Setup",
+          "event_link": "https://calendar.tamu.edu/cte/event/353456-canvas-gradebook-setup",
+          "event_date": "Thursday, June 12, 2025",
+          "event_time": "1:00pm - 2:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Reem Hussein, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44789",
+          "event_description": "In this session, participants will review a step-by-step process to create a gradebook that accurately tracks students\u2019 progress in the class, integrates with their teaching methods, and supports effective grading communication for their students.\nLearning Outcomes: Participants will be able to\u2026\n1) . Describe the benefits of accurately setting up Canvas gradebook for both instructors and students.\n2) Apply the step-by-step Canvas gradebook setup procedure.\n\nRegister Here: https://ers.tamu.edu/register.aspx?scheduleid=44789"
+        },
+        {
+          "event_name": "Mastering Canvas Modules: Essential Tips For Streamlined Course Organization",
+          "event_link": "https://calendar.tamu.edu/cte/event/353459-mastering-canvas-modules-essential-tips-for",
+          "event_date": "Wednesday, June 18, 2025",
+          "event_time": "1:00pm - 2:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Reem Hussein, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44791",
+          "event_description": "Kick start this semester with us as we explore the significance of structured course content and discover strategies for maintaining consistency and accessibility in your Canvas modules. Enhance your course management skills with practical tips and best practices!\nLearning Outcomes: Participants will be able to\u2026\n1) Discuss the importance of organizing course content utilizing Canvas Modules.\n2) Identify ways to organize course content by ensuring consistency and accessibility.\n\nRegister Here: https://ers.tamu.edu/register.aspx?scheduleid=44791"
+        }
+      ]
+    },
+    {
+      "category_name": "Creating Accessible Content Workshops",
+      "description": "Step up your digital inclusivity game with our \"Creating Accessible Content Workshops\". These sessions will equip you with the skills to successfully make Word and PowerPoint files accessible to everyone, in line with the latest Title II revisions. Empower your students, broaden your audience and foster inclusivity. Don't miss this chance to enhance your digital content creation expertise. Sign up now and make a difference!",
+      "events": [
+        {
+          "event_name": "Creating Accessible Content With Word And PowerPoint Files",
+          "event_link": "https://calendar.tamu.edu/cte/event/353457-creating-accessible-content-with-word-and",
+          "event_date": "Monday, June 16, 2025",
+          "event_time": "1:00pm - 2:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Carlos Perez, Center for Teaching Excellence\nDr. Jamie Thompson, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44790",
+          "event_description": "This workshop will be offered twice this summer\u2014on June 16th and July 31st\u2014to accommodate varying summer schedules. The recent Title II revision (Final Rule) requires all digital content to meet accessibility standards, ensuring usability for all users. Prepare for this mandate with this workshop that addresses common accessibility issues in Microsoft Word and PowerPoint.\nParticipants will gain hands-on experience with remediation techniques, including using built-in accessibility checkers, applying effective formatting strategies, and ensuring documents meet accessibility standards. Please bring at least one Word document and one PowerPoint presentation for remediation during the workshop.\nLearning Outcomes: Participants will be able to\u2026\n1) Identify common accessibility issues in Word and PowerPoint documents.\n2) Apply best practices to remediate and enhance the accessibility of Word and PowerPoint documents.\n3) Evaluate the accessibility of documents using the built-in accessibility checker.\n\nRegister Here: https://ers.tamu.edu/register.aspx?scheduleid=44790"
+        },
+        {
+          "event_name": "Creating Accessible Content With Word And PowerPoint",
+          "event_link": "https://calendar.tamu.edu/cte/event/354706-creating-accessible-content-with-word-and",
+          "event_date": "Wednesday, June 18, 2025",
+          "event_time": "9:00am - 10:00am CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Carlos Perez, Center for Teaching Excellence\nDr. Jamie Thompson, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44843",
+          "event_description": "Elevate your document accessibility skills in this workshop. This workshop focuses on common accessibility issues in Microsoft Word and PowerPoint. Participants will explore key challenges and gain practical experience with remediation techniques. You\u2019ll learn how to use built-in accessibility checkers, apply effective formatting strategies, and ensure your documents meet accessibility standards. Participants will need to have access to at least one Word document and one PowerPoint presentation for remediation during the workshop.\n\nLearning Outcomes: Participants will be able to:\n1. Identify common accessibility issues in Word and PowerPoint documents.\n2. Apply best practices to remediate and enhance the accessibility of Word and PowerPoint documents.\n3. Evaluate the accessibility of documents using the built-in accessibility checker.\n\nRegister Here: https://ers.tamu.edu/register.aspx?scheduleid=44843"
+        }
+      ]
+    },
+    {
+      "category_name": "Additional Events",
+      "description": "\"Boost your academic prowess with our Additional Events series at Texas A&M University! These workshops offer invaluable insights on cutting-edge tools and technologies such as Respondus and GenAI. Uncover the potential of online proctoring and AI in higher education, and learn how they can revolutionize your teaching and administrative tasks. Don't miss the chance to stay ahead of the curve - sign up now and embark on this exciting journey of learning and innovation!\"",
+      "events": [
+        {
+          "event_name": "Proctoring Your Exams Using Respondus Lock Down Browser",
+          "event_link": "https://calendar.tamu.edu/cte/event/353418-proctoring-your-exams-using-respondus-lock-down",
+          "event_date": "Monday, June 9, 2025",
+          "event_time": "10:00am - 11:00am CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Rebecca Schkade - Respondus\nDr. Armanto Sutedjo - Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44783",
+          "event_description": "This workshop is designed to provide instructors with a comprehensive understanding of Respondus, a proctoring tool for creating and managing online assessments. Participants will learn how to navigate the Respondus interface, create and customize exams, and implement best practices for online assessments.\nBy the end of the workshop, attendees will be equipped with the knowledge and skills to effectively use Respondus to enhance their online teaching and assessment strategies.\nLearning Outcomes:\nParticipants will be able to:\n1) Identify key features of Respondus Lock Down Browser for creating and managing proctored assessments for their course.\n2) Build a proctored assessment in Canvas using Respondus Lock Down Browser.\n3) Explore best practices for using Respondus Lock Down Browser to enhance the quality and integrity of their assessments.\n\nRegister Here: https://ers.tamu.edu/register.aspx?scheduleid=44783"
+        },
+        {
+          "event_name": "How GenAI Works And Its Potential Use In Higher Education",
+          "event_link": "https://calendar.tamu.edu/cte/event/353458-how-genai-works-and-its-potential-use-in-higher",
+          "event_date": "Tuesday, June 17, 2025",
+          "event_time": "11:00am - 12:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Kelli Adam, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44777",
+          "event_description": "Explore how Generative AI works and its practical applications in higher education. Discover how this technology can streamline administrative tasks, all without using (much) technical jargon.\nLearning Outcomes: Participants will be able to\u2026\n1) Explain the basic principles of how GenAI works, including its key components and processes.\n2) Apply practical use cases of GenAI in higher education settings.\n\nRegister Here: https://ers.tamu.edu/register.aspx?scheduleid=44777"
+        }
+      ]
+    }
+  ],
+  "elp_events": [
+    {
+      "category_name": "Conversation Circle",
+      "description": "Ignite your linguistic potential with our Conversation Circle series at Texas A&M University. This event fosters English language proficiency through engaging group discussions on diverse cultural topics. Attendees will enhance their spontaneous speaking skills, gain insights into American university culture, and connect with a supportive academic community. Join us and unlock a world of communication opportunities. Sign up today and empower your language journey!",
+      "events": [
+        {
+          "event_name": "Conversation Circle For English Language Proficiency",
+          "event_link": "https://calendar.tamu.edu/elp/event/354414-conversation-circle-for-english-language",
+          "event_date": "Tuesday, June 10, 2025",
+          "event_time": "8:00am - 9:00am CDT Weekly (to Aug 6)",
+          "event_location": "Zoom",
+          "event_facilitators": "Sarah Vargas, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/7534",
+          "event_description": "Conversation Circle is a supportive space for practicing spoken English through group discussions on cultural topics, including American university culture. Participants improve spontaneous speaking, active listening, and conversational turn-taking. Through communication with speakers from a variety backgrounds, they acclimate to different accents. The sessions promote social connections, intercultural dialogue, and a sense of belonging. The goal is to enhance English fluency, comprehension, and confidence.\n\nLearning Outcomes:\nParticipants will be able to\u2026\n1. Employ effective spontaneous communication skills in social, academic and professional settings.\n2. Elaborate on their viewpoints and opinions in group discussions.\n3. Construct clear and well-structured responses during impromptu conversations.\n4. Apply appropriate turn-taking and active listening techniques in casual group discussions and more formal academic discussions."
+        },
+        {
+          "event_name": "Conversation Circle For English Language Proficiency",
+          "event_link": "https://calendar.tamu.edu/elp/event/354425-conversation-circle-for-english-language",
+          "event_date": "Wednesday, June 11, 2025",
+          "event_time": "1:00pm - 2:00pm CDT Weekly (to Aug 7)",
+          "event_location": "BLOCKER 236 A",
+          "event_facilitators": "Sarah Vargas, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/7534",
+          "event_description": "Conversation Circle is a supportive space for practicing spoken English through group discussions on cultural topics, including American university culture. Participants improve spontaneous speaking, active listening, and conversational turn-taking. Through communication with speakers from a variety backgrounds, they acclimate to different accents. The sessions promote social connections, intercultural dialogue, and a sense of belonging. The goal is to enhance English fluency, comprehension, and confidence.\n\nLearning Outcomes:\nParticipants will be able to\u2026\n1. Employ effective spontaneous communication skills in social, academic and professional settings.\n2. Elaborate on their viewpoints and opinions in group discussions.\n3. Construct clear and well-structured responses during impromptu conversations.\n4. Apply appropriate turn-taking and active listening techniques in casual group discussions and more formal academic discussions."
+        },
+        {
+          "event_name": "Conversation Circle For English Language Proficiency",
+          "event_link": "https://calendar.tamu.edu/elp/event/354372-conversation-circle-for-english-language",
+          "event_date": "Thursday, June 12, 2025",
+          "event_time": "9:00am - 10:00am CDT Weekly (to Jul 28)",
+          "event_location": "Zoom",
+          "event_facilitators": "Michele Vick, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/7534",
+          "event_description": "Conversation Circle is a supportive space for practicing spoken English through group discussions on cultural topics, including American university culture. Participants improve spontaneous speaking, active listening, and conversational turn-taking. Through communication with speakers from a variety backgrounds, they acclimate to different accents. The sessions promote social connections, intercultural dialogue, and a sense of belonging. The goal is to enhance English fluency, comprehension, and confidence.\n\nLearning Outcomes: \nParticipants will be able to\u2026\n1. Employ effective spontaneous communication skills in social, academic and professional settings.\n2. Elaborate on their viewpoints and opinions in group discussions.\n3. Construct clear and well-structured responses during impromptu conversations.\n4. Apply appropriate turn-taking and active listening techniques in casual group discussions and more formal academic discussions."
+        },
+        {
+          "event_name": "Conversation Circle For English Language Proficiency",
+          "event_link": "https://calendar.tamu.edu/elp/event/354415-conversation-circle-for-english-language",
+          "event_date": "Tuesday, June 17, 2025",
+          "event_time": "8:00am - 9:00am CDT Weekly (to Aug 6)",
+          "event_location": "Zoom",
+          "event_facilitators": "Sarah Vargas, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/7534",
+          "event_description": "Conversation Circle is a supportive space for practicing spoken English through group discussions on cultural topics, including American university culture. Participants improve spontaneous speaking, active listening, and conversational turn-taking. Through communication with speakers from a variety backgrounds, they acclimate to different accents. The sessions promote social connections, intercultural dialogue, and a sense of belonging. The goal is to enhance English fluency, comprehension, and confidence.\n\nLearning Outcomes:\nParticipants will be able to\u2026\n1. Employ effective spontaneous communication skills in social, academic and professional settings.\n2. Elaborate on their viewpoints and opinions in group discussions.\n3. Construct clear and well-structured responses during impromptu conversations.\n4. Apply appropriate turn-taking and active listening techniques in casual group discussions and more formal academic discussions."
+        },
+        {
+          "event_name": "Conversation Circle For English Language Proficiency",
+          "event_link": "https://calendar.tamu.edu/elp/event/354426-conversation-circle-for-english-language",
+          "event_date": "Wednesday, June 18, 2025",
+          "event_time": "1:00pm - 2:00pm CDT Weekly (to Aug 7)",
+          "event_location": "BLOCKER 236 A",
+          "event_facilitators": "Sarah Vargas, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/7534",
+          "event_description": "Conversation Circle is a supportive space for practicing spoken English through group discussions on cultural topics, including American university culture. Participants improve spontaneous speaking, active listening, and conversational turn-taking. Through communication with speakers from a variety backgrounds, they acclimate to different accents. The sessions promote social connections, intercultural dialogue, and a sense of belonging. The goal is to enhance English fluency, comprehension, and confidence.\n\nLearning Outcomes:\nParticipants will be able to\u2026\n1. Employ effective spontaneous communication skills in social, academic and professional settings.\n2. Elaborate on their viewpoints and opinions in group discussions.\n3. Construct clear and well-structured responses during impromptu conversations.\n4. Apply appropriate turn-taking and active listening techniques in casual group discussions and more formal academic discussions."
+        }
+      ]
+    },
+    {
+      "category_name": "Microteaching Practice",
+      "description": "Delve into Microteaching Practice at Texas A&M University - a series of workshops designed to polish your teaching and public speaking finesse. Experience the thrill of delivering microteaching demonstrations in a supportive, low-risk environment. Perfect for faculty and staff, these events offer the opportunity to enhance English language proficiency and pedagogical effectiveness. Don't miss out - sign up and elevate your teaching skills to new heights!",
+      "events": [
+        {
+          "event_name": "Microteaching Practice (English Language Proficiency)",
+          "event_link": "https://calendar.tamu.edu/elp/event/354392-microteaching-practice-english-language",
+          "event_date": "Monday, June 9, 2025",
+          "event_time": "8:30am - 9:30am CDT Weekly (to Aug 5)",
+          "event_location": "Zoom",
+          "event_facilitators": "Ginessa Payne, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/8325",
+          "event_description": "This workshop helps participants enhance their teaching and public speaking skills through microteaching demonstrations delivered in a low-risk environment. Each participant delivers a 5-minute presentation, receiving constructive feedback from a consultant and an undergraduate student on pronunciation, presentation structure, visual aids, nonverbal communication and more. By presenting in front of a friendly audience, participants develop confidence, and by observing peers\u2019 presentations, they gain additional insight into best practices for comprehensible and well-developed presentations.\n\nLearning Outcomes: \nParticipants will be able to\u2026\n1. Construct and deliver short, well-structured and intelligible presentations.\n2. Create a visual aid to support key points.\n3. Identify areas for improvement in their own presentations and those of their peers."
+        },
+        {
+          "event_name": "Microteaching Practice (English Language Proficiency)",
+          "event_link": "https://calendar.tamu.edu/elp/event/354383-microteaching-practice-english-language",
+          "event_date": "Wednesday, June 11, 2025",
+          "event_time": "10:00am - 11:00am CDT Weekly (to Jul 25)",
+          "event_location": "Zoom",
+          "event_facilitators": "Michele Vick, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/8325",
+          "event_description": "This workshop helps participants enhance their teaching and public speaking skills through microteaching demonstrations delivered in a low-risk environment. Each participant delivers a 5-minute presentation, receiving constructive feedback from a consultant and an undergraduate student on pronunciation, presentation structure, visual aids, nonverbal communication and more. By presenting in front of a friendly audience, participants develop confidence, and by observing peers\u2019 presentations, they gain additional insight into best practices for comprehensible and well-developed presentations.\n\nLearning Outcomes: \nParticipants will be able to\u2026\n1. Construct and deliver short, well-structured and intelligible presentations.\n2. Create a visual aid to support key points.\n3. Identify areas for improvement in their own presentations and those of their peers."
+        },
+        {
+          "event_name": "Microteaching Practice (English Language Proficiency)",
+          "event_link": "https://calendar.tamu.edu/elp/event/354393-microteaching-practice-english-language",
+          "event_date": "Monday, June 16, 2025",
+          "event_time": "8:30am - 9:30am CDT Weekly (to Aug 5)",
+          "event_location": "Zoom",
+          "event_facilitators": "Ginessa Payne, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/8325",
+          "event_description": "This workshop helps participants enhance their teaching and public speaking skills through microteaching demonstrations delivered in a low-risk environment. Each participant delivers a 5-minute presentation, receiving constructive feedback from a consultant and an undergraduate student on pronunciation, presentation structure, visual aids, nonverbal communication and more. By presenting in front of a friendly audience, participants develop confidence, and by observing peers\u2019 presentations, they gain additional insight into best practices for comprehensible and well-developed presentations.\n\nLearning Outcomes: \nParticipants will be able to\u2026\n1. Construct and deliver short, well-structured and intelligible presentations.\n2. Create a visual aid to support key points.\n3. Identify areas for improvement in their own presentations and those of their peers."
+        },
+        {
+          "event_name": "Microteaching Practice (English Language Proficiency)",
+          "event_link": "https://calendar.tamu.edu/elp/event/354384-microteaching-practice-english-language",
+          "event_date": "Wednesday, June 18, 2025",
+          "event_time": "10:00am - 11:00am CDT Weekly (to Jul 25)",
+          "event_location": "Zoom",
+          "event_facilitators": "Michele Vick, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/8325",
+          "event_description": "This workshop helps participants enhance their teaching and public speaking skills through microteaching demonstrations delivered in a low-risk environment. Each participant delivers a 5-minute presentation, receiving constructive feedback from a consultant and an undergraduate student on pronunciation, presentation structure, visual aids, nonverbal communication and more. By presenting in front of a friendly audience, participants develop confidence, and by observing peers\u2019 presentations, they gain additional insight into best practices for comprehensible and well-developed presentations.\n\nLearning Outcomes: \nParticipants will be able to\u2026\n1. Construct and deliver short, well-structured and intelligible presentations.\n2. Create a visual aid to support key points.\n3. Identify areas for improvement in their own presentations and those of their peers."
+        }
+      ]
+    },
+    {
+      "category_name": "ELP Journal Club",
+      "description": "Join the ELP Journal Club at Texas A&M University, a unique series of academic events dedicated to fostering confidence and improving conversational skills among international TAs and faculty. Dive into enriching text-based discussions, polish your reading aloud skills and enhance your classroom leadership capabilities. Seize this opportunity to engage with diverse perspectives, broaden your academic horizons, and create meaningful dialogues. Sign up today and take your teaching abilities to the next level with the ELP Journal Club!",
+      "events": [
+        {
+          "event_name": "ELP Journal Club: A Conversation Circle For Text-Based Discussions",
+          "event_link": "https://calendar.tamu.edu/elp/event/354402-elp-journal-club-a-conversation-circle-for",
+          "event_date": "Monday, June 9, 2025",
+          "event_time": "11:00am - 12:00pm CDT Weekly (to Jul 22)",
+          "event_location": "Zoom",
+          "event_facilitators": "Michele Vick, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/10889",
+          "event_description": "Journal Club is designed for international TAs and faculty to gain confidence in reading aloud and leading and participating in classroom discussions about texts. Each week, participants will receive a short article two days ahead of time to prepare for our discussions. This workshop will focus on improving pronunciation, expanding vocabulary, and developing effective discussion strategies. Participants will also have the opportunity to lead discussions, enhancing their confidence and skills in academic settings.\n\nLearning Outcomes: \nParticipants will be able to\u2026\n1. Read aloud with comprehensible pronunciation and increased confidence.\n2.Use key terms from academic texts accurately in discussions.\n3. Effectively facilitate group discussions about various texts.\n4. Employ turn-taking skills when participating in discussions."
+        },
+        {
+          "event_name": "ELP Journal Club: A Conversation Circle For Text-Based Discussions",
+          "event_link": "https://calendar.tamu.edu/elp/event/354403-elp-journal-club-a-conversation-circle-for",
+          "event_date": "Monday, June 16, 2025",
+          "event_time": "11:00am - 12:00pm CDT Weekly (to Jul 22)",
+          "event_location": "Zoom",
+          "event_facilitators": "Michele Vick, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/10889",
+          "event_description": "Journal Club is designed for international TAs and faculty to gain confidence in reading aloud and leading and participating in classroom discussions about texts. Each week, participants will receive a short article two days ahead of time to prepare for our discussions. This workshop will focus on improving pronunciation, expanding vocabulary, and developing effective discussion strategies. Participants will also have the opportunity to lead discussions, enhancing their confidence and skills in academic settings.\n\nLearning Outcomes: \nParticipants will be able to\u2026\n1. Read aloud with comprehensible pronunciation and increased confidence.\n2.Use key terms from academic texts accurately in discussions.\n3. Effectively facilitate group discussions about various texts.\n4. Employ turn-taking skills when participating in discussions."
+        }
+      ]
+    },
+    {
+      "category_name": "ELP Practice Group For Instructors",
+      "description": "Join the ELP Practice Group for Instructors at Texas A&M University, a dynamic series of workshops designed for international graduate students, faculty, post-docs, and visiting scholars. Explore, enhance and practice your English teaching skills in an engaging and supportive setting. Gain valuable insights, boost your confidence, and interact with peers across disciplines. Sign up today and take a step forward in your teaching journey!",
+      "events": [
+        {
+          "event_name": "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 10): Microteaching",
+          "event_link": "https://calendar.tamu.edu/elp/event/354482-english-language-proficiency-practice-group-for-instr",
+          "event_date": "Monday, June 9, 2025",
+          "event_time": "12:00pm - 1:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Ginessa Payne, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/11185",
+          "event_description": "Tenth in a series of workshops for international graduate students, faculty, post-docs, and visiting scholars. This interactive workshop provides a friendly environment in which to practice teaching a microlesson. Presenters field questions from the audience and then receive feedback from a peer and from a CTE-ELP consultant.\n\nLearning Outcomes:\nParticipants will be able to\u2026\n1. Teach for five minutes with logical organization, clear pronunciation, appropriate body language, instructive visual aid, and engagement with the audience.\n2. Respond effectively to audience questions."
+        },
+        {
+          "event_name": "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 10): Microteaching",
+          "event_link": "https://calendar.tamu.edu/elp/event/354483-english-language-proficiency-practice-group-for-instr",
+          "event_date": "Tuesday, June 10, 2025",
+          "event_time": "12:00pm - 1:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Ginessa Payne, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/11185",
+          "event_description": "Tenth in a series of workshops for international graduate students, faculty, post-docs, and visiting scholars. This interactive workshop provides a friendly environment in which to practice teaching a microlesson. Presenters field questions from the audience and then receive feedback from a peer and from a CTE-ELP consultant.\n\nLearning Outcomes:\nParticipants will be able to\u2026\n1. Teach for five minutes with logical organization, clear pronunciation, appropriate body language, instructive visual aid, and engagement with the audience.\n2. Respond effectively to audience questions."
+        }
+      ]
+    },
+    {
+      "category_name": "ELP Grammar Workshops",
+      "description": "Boost your communication skills with our ELP Grammar Workshops! Our engaging sessions, like 'Suggestion or Requirement' and 'Questioning Clarity,' focus on mastering key grammatical concepts for clearer, more effective communication. Understand the subtleties of modal verbs and question formation, and elevate your English language proficiency. Don't miss this chance to enhance your communication toolbox - sign up today and take a leap towards linguistic excellence!",
+      "events": [
+        {
+          "event_name": "Suggestion Or Requirement? Use The Right Modal Verb To Give Clear Instructions (English Language Proficiency)",
+          "event_link": "https://calendar.tamu.edu/elp/event/354367-suggestion-or-requirement-use-the-right-modal-verb",
+          "event_date": "Tuesday, June 10, 2025",
+          "event_time": "10:30am - 11:30am CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Michele Vick, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/10388",
+          "event_description": "Grammatical errors can hinder successful spoken communication. Speakers can communicate more effectively when they utilize the appropriate modal verbs (such as should, might, must) to convey obligations and suggestions. In this workshop, attendees will review and practice modal verbs in the context of giving instructions and corrective feedback. An optional assignment for extended practice will be available on Canvas.\n\nLearning Outcomes: \nParticipants will be able to\u2026\n1. Review different modal verbs (such as should and have to) and compare their functions.\n2. Demonstrate ability to use appropriate modal verbs to give instructions, conveying specific meaning and fostering clarity and understanding in the lab setting.\n3. Discuss best practices for giving corrective feedback.\n4. Employ modal verbs in the feedback process, showcasing the ability to convey constructive criticism and suggestions using appropriate modals."
+        },
+        {
+          "event_name": "Questioning Clarity: Strategies For Effective Question Formation In Communication (English Language Proficiency)",
+          "event_link": "https://calendar.tamu.edu/elp/event/354368-questioning-clarity-strategies-for-effective-question",
+          "event_date": "Tuesday, June 17, 2025",
+          "event_time": "10:30am - 11:30am CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Michele Vick, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/10389",
+          "event_description": "Mastering question formation is crucial for effective communication. In this workshop, attendees will review the grammatical structures of direct and indirect questions, and discuss how higher order questions can encourage critical thinking and foster deeper learning. An optional assignment for extended practice will be available on Canvas.\n\nLearning Outcomes: \nParticipants will be able to\u2026\n1. Plan and utilize questions as an instructional tool to foster deeper learning.\n2. Correctly formulate indirect (embedded) questions to elicit student engagement or check for understanding."
+        }
+      ]
+    }
+  ]
+}
