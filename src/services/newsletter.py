@@ -73,6 +73,54 @@ class NewsletterGenerator:
             logger.error(f"Error during newsletter generation: {str(e)}")
             return (False, f"Error during newsletter generation: {str(e)}")
     
+    def _distribute_weekly_events(self, regular_categories: List[Dict], weekly_events: List[Dict]) -> List[Dict]:
+        """
+        Distribute weekly events evenly between regular event categories
+        
+        Args:
+            regular_categories: List of regular event categories
+            weekly_events: List of weekly events
+            
+        Returns:
+            List with weekly events distributed between regular categories
+        """
+        if not weekly_events:
+            return regular_categories
+        
+        if not regular_categories:
+            # If no regular categories, return weekly events as is
+            return [{"type": "weekly", "data": event} for event in weekly_events]
+        
+        # Calculate distribution points
+        total_regular = len(regular_categories)
+        total_weekly = len(weekly_events)
+        
+        # Distribute weekly events evenly
+        distributed_content = []
+        weekly_index = 0
+        
+        for i, category in enumerate(regular_categories):
+            # Add the regular category
+            distributed_content.append({"type": "regular", "data": category})
+            
+            # Calculate if we should add a weekly event after this category
+            # We want to distribute weekly events as evenly as possible
+            if weekly_index < total_weekly:
+                # Use a distribution formula to space weekly events evenly
+                position_ratio = (i + 1) / total_regular
+                expected_weekly_position = position_ratio * total_weekly
+                
+                if weekly_index < expected_weekly_position:
+                    distributed_content.append({"type": "weekly", "data": weekly_events[weekly_index]})
+                    weekly_index += 1
+        
+        # Add any remaining weekly events at the end
+        while weekly_index < total_weekly:
+            distributed_content.append({"type": "weekly", "data": weekly_events[weekly_index]})
+            weekly_index += 1
+        
+        return distributed_content
+    
     def _generate_email_html(self, categorized_events_path: str, categorization_cache_path: str) -> str:
         """Generate the complete HTML newsletter"""
         # Load the JSON data
@@ -82,8 +130,13 @@ class NewsletterGenerator:
         with open(categorization_cache_path, 'r') as f:
             categorization_cache = json.load(f)
         
-        # Extract date range
+        # Extract data
         date_range = categorized_events.get('date_range', {})
+        cte_events = categorized_events.get('cte_events', [])
+        elp_events = categorized_events.get('elp_events', [])
+        weekly_events = categorized_events.get('weekly_events', [])
+        
+        logger.info(f"Processing {len(cte_events)} CTE categories, {len(elp_events)} ELP categories, {len(weekly_events)} weekly events")
         
         # Start building the HTML
         html = """<!DOCTYPE html>
@@ -136,9 +189,13 @@ class NewsletterGenerator:
                         </p>
         """
         
-        # Add CTE event categories
-        if 'cte_events' in categorized_events:
-            for category in categorized_events['cte_events']:
+        # Create distributed content for CTE section
+        cte_distributed = self._distribute_weekly_events(cte_events, weekly_events[:len(weekly_events)//2])
+        
+        # Process CTE events with distributed weekly events
+        for item in cte_distributed:
+            if item["type"] == "regular":
+                category = item["data"]
                 category_name = category.get('category_name', '')
                 category_description = category.get('description', '')
                 events = category.get('events', [])
@@ -151,6 +208,11 @@ class NewsletterGenerator:
                     html += self._event_template(event)
                 
                 # Add separator after category
+                html += self._separator_template()
+            
+            elif item["type"] == "weekly":
+                weekly_event = item["data"]
+                html += self._weekly_event_template(weekly_event)
                 html += self._separator_template()
         
         # Add ELP banner before ELP events
@@ -168,9 +230,14 @@ class NewsletterGenerator:
                             </table>
         """
         
-        # Add ELP event categories
-        if 'elp_events' in categorized_events:
-            for category in categorized_events['elp_events']:
+        # Create distributed content for ELP section
+        remaining_weekly = weekly_events[len(weekly_events)//2:]
+        elp_distributed = self._distribute_weekly_events(elp_events, remaining_weekly)
+        
+        # Process ELP events with distributed weekly events
+        for item in elp_distributed:
+            if item["type"] == "regular":
+                category = item["data"]
                 category_name = category.get('category_name', '')
                 category_description = category.get('description', '')
                 events = category.get('events', [])
@@ -182,7 +249,12 @@ class NewsletterGenerator:
                 for event in events:
                     html += self._event_template(event)
                 
-                # Add separator after category (except for the last one)
+                # Add separator after category
+                html += self._separator_template()
+            
+            elif item["type"] == "weekly":
+                weekly_event = item["data"]
+                html += self._weekly_event_template(weekly_event)
                 html += self._separator_template()
         
         # Add footer
@@ -236,6 +308,53 @@ class NewsletterGenerator:
             """
         
         return html
+    
+    def _weekly_event_template(self, weekly_event: Dict[str, Any]) -> str:
+        """Generate HTML for a weekly event using the provided template"""
+        category_name = weekly_event.get('category_name', '')
+        description = weekly_event.get('description', '')
+        weekly_event_info = weekly_event.get('weekly_event_info', '')
+        event_link = weekly_event.get('event_link', '')
+        event_registration_link = weekly_event.get('event_registration_link', '')
+        
+        # Create a short version of category name for links
+        category_name_short = category_name[:40] + '...' if len(category_name) > 40 else category_name
+        
+        return f"""
+                        <div align="center">
+                            <table border="0" cellspacing="0" cellpadding="0" width="600"
+                                style="width:6.25in;color:inherit;font-size:inherit">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding:7.5pt 0in 11.25pt 0in">
+                                            <p>
+                                                <b><span
+                                                        style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{category_name}</span></b><span
+                                                    style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif"><br>
+                                                    <span style="color:#500000">{description}</span></span><u></u><u></u>
+                                            </p>
+                                            <p>
+                                                <span
+                                                    style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{weekly_event_info}</span><span
+                                                    style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif"><br>
+                                                    <span style="color:#500000"><b><a
+                                                            href="{event_link}"
+                                                            target="_blank"
+                                                            style="color:#500000">Read more about the
+                                                            {category_name_short} Sessions
+                                                            here</a></b>.<br>
+                                                        <b><a href="{event_registration_link}"
+                                                            target="_blank"
+                                                            style="color:#500000">Register for the
+                                                            {category_name_short}
+                                                            here</a></b>.</span></span><u></u><u></u>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+        """
     
     def _category_template(self, category_name: str, category_description: str) -> str:
         """Generate HTML for category title and description"""

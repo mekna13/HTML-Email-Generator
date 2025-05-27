@@ -1,76 +1,50 @@
 {
   "CTE_categories": [
     {
-      "category_name": "Digital Accessibility Series",
-      "description": ""
-    },
-    {
       "category_name": "GMA Series",
       "description": ""
     },
     {
-      "category_name": "Canvas Workshops",
+      "category_name": "Digital Accessibility Series",
       "description": ""
     },
     {
-      "category_name": "Creating Accessible Content Workshops",
+      "category_name": "Workshop",
       "description": ""
     },
     {
-      "category_name": "Additional Events",
+      "category_name": "Canvas Training",
       "description": ""
     }
   ],
   "CTE_event_map": {
-    "Proctoring Your Exams Using Respondus Lock Down Browser|Monday, June 9, 2025": "Additional Events",
+    "GMA | Maintaining Effective Communication | Thursday, June 5, 10:00am - 12:00pm | Virtual|Thursday, June 5, 2025": "GMA Series",
+    "Proctoring Your Exams Using Respondus Lock Down Browser|Monday, June 9, 2025": "Workshop",
     "GMA | Aligning Expectations | Monday, June 9, 11:30am-1:00 Pm | Virtual|Monday, June 9, 2025": "GMA Series",
     "Digital Accessibility: An Overview|Wednesday, June 11, 2025": "Digital Accessibility Series",
     "Digital Accessibility Series \u2013 Session 1: What Is Digital Accessibility?|Wednesday, June 11, 2025": "Digital Accessibility Series",
     "GMA | Promoting Professional Development | Wednesday, June 11, 1:00 Pm-2:30 Pm | Virtual|Wednesday, June 11, 2025": "GMA Series",
-    "Canvas Gradebook Setup|Thursday, June 12, 2025": "Canvas Workshops",
-    "Creating Accessible Content With Word And PowerPoint Files|Monday, June 16, 2025": "Creating Accessible Content Workshops",
-    "GMA | Assessing Understanding | Tuesday, June 17, 9:00-10:30 Am | Virtual|Tuesday, June 17, 2025": "GMA Series",
-    "How GenAI Works And Its Potential Use In Higher Education|Tuesday, June 17, 2025": "Additional Events",
-    "Creating Accessible Content With Word And PowerPoint|Wednesday, June 18, 2025": "Creating Accessible Content Workshops",
-    "Mastering Canvas Modules: Essential Tips For Streamlined Course Organization|Wednesday, June 18, 2025": "Canvas Workshops"
+    "Canvas Gradebook Setup|Thursday, June 12, 2025": "Canvas Training"
   },
   "ELP_categories": [
     {
-      "category_name": "Microteaching Practice",
+      "category_name": "English Language Proficiency Practice Group For Instructors",
       "description": ""
     },
     {
-      "category_name": "ELP Journal Club",
-      "description": ""
-    },
-    {
-      "category_name": "ELP Practice Group For Instructors",
-      "description": ""
-    },
-    {
-      "category_name": "Conversation Circle",
-      "description": ""
-    },
-    {
-      "category_name": "ELP Grammar Workshops",
+      "category_name": "English Language Proficiency Workshops",
       "description": ""
     }
   ],
   "ELP_event_map": {
-    "Microteaching Practice (English Language Proficiency)|Monday, June 9, 2025": "Microteaching Practice",
-    "ELP Journal Club: A Conversation Circle For Text-Based Discussions|Monday, June 9, 2025": "ELP Journal Club",
-    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 10): Microteaching|Monday, June 9, 2025": "ELP Practice Group For Instructors",
-    "Conversation Circle For English Language Proficiency|Tuesday, June 10, 2025": "Conversation Circle",
-    "Suggestion Or Requirement? Use The Right Modal Verb To Give Clear Instructions (English Language Proficiency)|Tuesday, June 10, 2025": "ELP Grammar Workshops",
-    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 10): Microteaching|Tuesday, June 10, 2025": "ELP Practice Group For Instructors",
-    "Microteaching Practice (English Language Proficiency)|Wednesday, June 11, 2025": "Microteaching Practice",
-    "Conversation Circle For English Language Proficiency|Wednesday, June 11, 2025": "Conversation Circle",
-    "Conversation Circle For English Language Proficiency|Thursday, June 12, 2025": "Conversation Circle",
-    "Microteaching Practice (English Language Proficiency)|Monday, June 16, 2025": "Microteaching Practice",
-    "ELP Journal Club: A Conversation Circle For Text-Based Discussions|Monday, June 16, 2025": "ELP Journal Club",
-    "Conversation Circle For English Language Proficiency|Tuesday, June 17, 2025": "Conversation Circle",
-    "Questioning Clarity: Strategies For Effective Question Formation In Communication (English Language Proficiency)|Tuesday, June 17, 2025": "ELP Grammar Workshops",
-    "Microteaching Practice (English Language Proficiency)|Wednesday, June 18, 2025": "Microteaching Practice",
-    "Conversation Circle For English Language Proficiency|Wednesday, June 18, 2025": "Conversation Circle"
+    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 5): Prominent Words And Discourse Cues|Monday, June 2, 2025": "English Language Proficiency Practice Group For Instructors",
+    "Don\u2019T Tense Up About Verb Tenses: Choosing The Right Tense To Communicate Effectively (English Language Proficiency)|Tuesday, June 3, 2025": "English Language Proficiency Workshops",
+    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 6): Asking Questions And Active Learning|Tuesday, June 3, 2025": "English Language Proficiency Practice Group For Instructors",
+    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 7): Answering Questions And Contrastive Stress|Wednesday, June 4, 2025": "English Language Proficiency Practice Group For Instructors",
+    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 8): Linking Words And Leading A Discussion|Thursday, June 5, 2025": "English Language Proficiency Practice Group For Instructors",
+    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 9): Meet Undergraduate Students|Friday, June 6, 2025": "English Language Proficiency Practice Group For Instructors",
+    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 10): Microteaching|Monday, June 9, 2025": "English Language Proficiency Practice Group For Instructors",
+    "Suggestion Or Requirement? Use The Right Modal Verb To Give Clear Instructions (English Language Proficiency)|Tuesday, June 10, 2025": "English Language Proficiency Workshops",
+    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 10): Microteaching|Tuesday, June 10, 2025": "English Language Proficiency Practice Group For Instructors"
   }
 }

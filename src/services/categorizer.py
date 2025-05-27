@@ -21,6 +21,8 @@ class EventCategorizer:
         """Initialize the event categorizer"""
         self.descriptions_file = "category_descriptions.json"
         self.categorization_cache_file = "categorization_cache.json"
+        self.weekly_descriptions_file = "weekly_category_descriptions.json"
+        self.weekly_categorization_cache_file = "weekly_categorization_cache.json"
     
     def categorize_events(self, api_key: str, model: str = "gpt-3.5-turbo", debug_mode: bool = False) -> Tuple[bool, Dict[str, Any]]:
         """
@@ -63,11 +65,12 @@ class EventCategorizer:
             if not data:
                 raise Exception("Failed to load events data. Make sure events.json exists.")
             
-            # Extract event lists
-            cte_events = data.get("cte_events", [])
-            elp_events = data.get("elp_events", [])
+            # Extract event lists and separate weekly events
+            cte_events, cte_weekly_events = self._separate_weekly_events(data.get("cte_events", []))
+            elp_events, elp_weekly_events = self._separate_weekly_events(data.get("elp_events", []))
             
-            logger.info(f"Found {len(cte_events)} CTE events and {len(elp_events)} ELP events")
+            logger.info(f"Found {len(cte_events)} regular CTE events, {len(cte_weekly_events)} weekly CTE event groups")
+            logger.info(f"Found {len(elp_events)} regular ELP events, {len(elp_weekly_events)} weekly ELP event groups")
             
             # Initialize LLM for categorization (very low temperature)
             logger.info("Initializing LLM for categorization...")
@@ -75,45 +78,75 @@ class EventCategorizer:
             if not categorization_llm:
                 raise Exception("Failed to initialize LLM. Cannot proceed with categorization.")
             
-            # Categorize events using LLM
+            # Categorize regular events using LLM
             categorized_cte = self._categorize_events_with_llm(cte_events, "CTE", categorization_llm)
             categorized_elp = self._categorize_events_with_llm(elp_events, "ELP", categorization_llm)
             
+            # Process weekly events
+            weekly_events = self._process_weekly_events(cte_weekly_events + elp_weekly_events, categorization_llm)
+            
             # Load existing descriptions
             stored_descriptions = self._load_category_descriptions()
+            stored_weekly_descriptions = self._load_weekly_category_descriptions()
+            
             logger.info(f"Loaded {len(stored_descriptions)} stored category descriptions")
+            logger.info(f"Loaded {len(stored_weekly_descriptions)} stored weekly category descriptions")
             
             # Check if we need to generate any new descriptions
             new_categories = []
+            new_weekly_categories = []
+            
             for categories in [categorized_cte, categorized_elp]:
                 for category in categories:
                     if category["category_name"] not in stored_descriptions:
                         new_categories.append((category["category_name"], category["events"]))
             
-            logger.info(f"Found {len(new_categories)} new categories that need descriptions")
+            for weekly_event in weekly_events:
+                # Only generate descriptions for weekly events that don't have cached descriptions
+                # and still have the events array (meaning they weren't loaded from cache)
+                if (weekly_event["category_name"] not in stored_weekly_descriptions and 
+                    "events" in weekly_event):
+                    new_weekly_categories.append(weekly_event)
+            
+            logger.info(f"Found {len(new_categories)} new regular categories that need descriptions")
+            logger.info(f"Found {len(new_weekly_categories)} new weekly categories that need descriptions")
             
             # Initialize LLM for descriptions (higher temperature for creative content)
             description_llm = None
-            if new_categories:
+            if new_categories or new_weekly_categories:
                 logger.info("Initializing LLM for generating new descriptions...")
                 description_llm = self._initialize_llm(api_key, model, temperature=0.7)
                 if not description_llm:
                     logger.warning("Failed to initialize LLM for descriptions. Using placeholders.")
-                    
-                # Generate descriptions for new categories
+                
+                # Generate descriptions for new regular categories
                 for category_name, events in new_categories:
                     if description_llm:
                         description = self._generate_description_with_llm(category_name, events, description_llm)
                     else:
-                        # Placeholder if LLM initialization failed
                         description = f"A series of events focused on {category_name}."
                     
-                    # Store the new description
                     stored_descriptions[category_name] = description
                     logger.info(f"Generated new description for: {category_name}")
                 
+                # Generate descriptions for new weekly categories
+                for weekly_event in new_weekly_categories:
+                    if description_llm:
+                        description = self._generate_weekly_description_with_llm(weekly_event, description_llm)
+                        weekly_info = self._generate_weekly_info_with_llm(weekly_event, description_llm)
+                    else:
+                        description = f"A weekly series of events focused on {weekly_event['category_name']}."
+                        weekly_info = "Schedule and facilitator information to be determined."
+                    
+                    stored_weekly_descriptions[weekly_event["category_name"]] = {
+                        "description": description,
+                        "weekly_event_info": weekly_info
+                    }
+                    logger.info(f"Generated new weekly description for: {weekly_event['category_name']}")
+                
                 # Save updated descriptions
                 self._save_category_descriptions(stored_descriptions)
+                self._save_weekly_category_descriptions(stored_weekly_descriptions)
             
             # Apply descriptions to categorized events
             for category in categorized_cte + categorized_elp:
@@ -121,14 +154,28 @@ class EventCategorizer:
                 if category_name in stored_descriptions:
                     category["description"] = stored_descriptions[category_name]
                 else:
-                    # This shouldn't happen, but just in case
                     category["description"] = f"Events related to {category_name}."
+            
+            # Apply descriptions to weekly events
+            for weekly_event in weekly_events:
+                category_name = weekly_event["category_name"]
+                if category_name in stored_weekly_descriptions:
+                    weekly_event["description"] = stored_weekly_descriptions[category_name]["description"]
+                    weekly_event["weekly_event_info"] = stored_weekly_descriptions[category_name]["weekly_event_info"]
+                else:
+                    weekly_event["description"] = f"Weekly events related to {category_name}."
+                    weekly_event["weekly_event_info"] = "Schedule and facilitator information to be determined."
+                
+                # Remove events array from final output (not needed in JSON structure)
+                if "events" in weekly_event:
+                    del weekly_event["events"]
             
             # Build new structure
             structured_data = {
                 "date_range": data.get("date_range", {}),
                 "cte_events": categorized_cte,
-                "elp_events": categorized_elp
+                "elp_events": categorized_elp,
+                "weekly_events": weekly_events
             }
             
             # Save the categorized data
@@ -144,6 +191,292 @@ class EventCategorizer:
             logger.error(f"Error during categorization: {str(e)}")
             return (False, {"error": f"Error during categorization: {str(e)}"})
     
+    def _separate_weekly_events(self, events: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+        """
+        Separate weekly events from regular events
+        
+        Args:
+            events: List of events
+            
+        Returns:
+            Tuple of (regular_events, weekly_events_grouped)
+        """
+        regular_events = []
+        weekly_events_raw = []
+        
+        for event in events:
+            if event.get("event_time", "").find("Weekly") != -1:
+                weekly_events_raw.append(event)
+            else:
+                regular_events.append(event)
+        
+        # Group weekly events by name
+        weekly_groups = {}
+        for event in weekly_events_raw:
+            name = event["event_name"]
+            if name not in weekly_groups:
+                weekly_groups[name] = []
+            weekly_groups[name].append(event)
+        
+        # Convert to list of grouped events
+        weekly_events_grouped = []
+        for name, group in weekly_groups.items():
+            weekly_events_grouped.append({
+                "category_name": name,
+                "events": group,
+                "event_link": group[0]["event_link"],  # Use first event's link
+                "event_registration_link": group[0]["event_registration_link"]  # Use first event's registration
+            })
+        
+        return regular_events, weekly_events_grouped
+    
+    def _process_weekly_events(self, weekly_event_groups: List[Dict[str, Any]], llm: ChatOpenAI) -> List[Dict[str, Any]]:
+        """
+        Process weekly events into the required structure with caching support
+        
+        Args:
+            weekly_event_groups: List of weekly event groups
+            llm: LLM instance for processing
+            
+        Returns:
+            List of processed weekly events
+        """
+        processed_weekly_events = []
+        
+        # Load weekly categorization cache
+        weekly_cache = self._load_weekly_categorization_cache()
+        cache_updated = False
+        
+        for group in weekly_event_groups:
+            # Create cache key based on event name and event instances
+            cache_key = self._get_weekly_event_cache_key(group)
+            
+            # Check if this weekly event group is already cached
+            if cache_key in weekly_cache:
+                logger.info(f"Using cached weekly event: {group['category_name']}")
+                cached_event = weekly_cache[cache_key].copy()
+                # Remove the events array from cache data (not needed in final output)
+                if "events" in cached_event:
+                    del cached_event["events"]
+                processed_weekly_events.append(cached_event)
+            else:
+                logger.info(f"Processing new weekly event: {group['category_name']}")
+                processed_event = {
+                    "category_name": group["category_name"],
+                    "description": "",  # Will be filled later
+                    "event_link": group["event_link"],
+                    "event_registration_link": group["event_registration_link"],
+                    "weekly_event_info": "",  # Will be filled later
+                    "events": group["events"]  # Keep for description generation
+                }
+                processed_weekly_events.append(processed_event)
+                
+                # Cache this weekly event group for future use
+                weekly_cache[cache_key] = processed_event.copy()
+                cache_updated = True
+        
+        # Save updated cache if there were changes
+        if cache_updated:
+            self._save_weekly_categorization_cache(weekly_cache)
+        
+        return processed_weekly_events
+    
+    def _get_weekly_event_cache_key(self, weekly_group: Dict[str, Any]) -> str:
+        """
+        Generate a cache key for weekly events based on event name and instances
+        
+        Args:
+            weekly_group: Weekly event group data
+            
+        Returns:
+            Cache key string
+        """
+        # Use event name and count of instances as key
+        event_name = weekly_group["category_name"]
+        event_count = len(weekly_group["events"])
+        
+        # Include basic schedule info to detect changes
+        days = set()
+        times = set()
+        for event in weekly_group["events"]:
+            day = event.get("event_date", "").split(",")[0].strip()
+            time = event.get("event_time", "").split(" Weekly")[0].strip()
+            if day:
+                days.add(day)
+            if time:
+                times.add(time)
+        
+        # Create a deterministic key
+        schedule_hash = f"{len(days)}days_{len(times)}times"
+        return f"{event_name}|{event_count}|{schedule_hash}"
+    
+    def _load_weekly_categorization_cache(self) -> Dict[str, Any]:
+        """Load cached weekly categorization results"""
+        if os.path.exists(self.weekly_categorization_cache_file):
+            try:
+                with open(self.weekly_categorization_cache_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.error(f"Error loading weekly categorization cache: {e}")
+        return {}
+    
+    def _save_weekly_categorization_cache(self, cache: Dict[str, Any]) -> bool:
+        """Save weekly categorization results to cache"""
+        try:
+            with open(self.weekly_categorization_cache_file, "w", encoding="utf-8") as f:
+                json.dump(cache, f, indent=2)
+            return True
+        except Exception as e:
+            logger.error(f"Error saving weekly categorization cache: {e}")
+            return False
+    
+    def _generate_weekly_description_with_llm(self, weekly_event: Dict[str, Any], llm: ChatOpenAI) -> str:
+        """
+        Generate a description for a weekly event using LLM
+        
+        Args:
+            weekly_event: Weekly event data
+            llm: Initialized LangChain LLM
+            
+        Returns:
+            Generated description
+        """
+        import time as time_module  # Import with alias to avoid conflicts
+        
+        template = """
+        Create an engaging 5-line description for a weekly academic event series at Texas A&M University.
+        
+        Event Series: {category_name}
+        
+        Sample Event Description:
+        {event_description}
+        
+        Write a compelling description that:
+        - Explains what this weekly series is about
+        - Highlights the value and benefits for attendees  
+        - Encourages faculty and staff to sign up
+        - Uses an enthusiastic, professional tone
+        
+        DO NOT include specific dates, times, locations, or facilitator names.
+        Focus on the content and benefits of the series.
+        Keep it to exactly 5 lines.
+        
+        Description:
+        """
+        
+        # Use the first event's description as sample
+        sample_description = weekly_event["events"][0].get("event_description", "")
+        if len(sample_description) > 300:
+            sample_description = sample_description[:300] + "..."
+        
+        prompt = ChatPromptTemplate.from_template(template)
+        formatted_prompt = prompt.format(
+            category_name=weekly_event["category_name"],
+            event_description=sample_description
+        )
+        
+        try:
+            response = llm.invoke(formatted_prompt)
+            description = response.content.strip()
+            time_module.sleep(1)  # Rate limiting with explicit module reference
+            return description
+        except Exception as e:
+            logger.error(f"Error generating weekly description: {e}")
+            return f"A weekly series focused on {weekly_event['category_name']}."
+    
+    def _generate_weekly_info_with_llm(self, weekly_event: Dict[str, Any], llm: ChatOpenAI) -> str:
+        """
+        Generate weekly event info (schedule and facilitators) using LLM
+        
+        Args:
+            weekly_event: Weekly event data
+            llm: Initialized LangChain LLM
+            
+        Returns:
+            Generated weekly info
+        """
+        import time as time_module  # Import with alias to avoid conflicts
+        
+        # Extract schedule and facilitator information
+        events = weekly_event["events"]
+        
+        # Get unique days, times, and facilitators
+        days_times = []
+        facilitators = set()
+        
+        for event in events:
+            day = event.get("event_date", "").split(",")[0].strip()
+            event_time = event.get("event_time", "").split(" Weekly")[0].strip()
+            location = event.get("event_location", "").strip()
+            facilitator = event.get("event_facilitators", "").strip()
+            
+            if day and event_time:
+                location_info = f" in {location}" if location and location != "Zoom" else " (Virtual)" if location == "Zoom" else ""
+                days_times.append(f"{day}s at {event_time}{location_info}")
+            
+            if facilitator:
+                facilitators.add(facilitator)
+        
+        template = """
+        Create a concise weekly event information summary based on the following schedule and facilitator data:
+        
+        Event Series: {category_name}
+        
+        Schedule Information:
+        {schedule_info}
+        
+        Facilitators:
+        {facilitators_info}
+        
+        Write a brief, informative summary that:
+        - Clearly states when the sessions take place
+        - Lists the facilitators
+        - Uses a professional, clear tone
+        - Is 2-3 lines maximum
+        
+        Weekly Event Info:
+        """
+        
+        schedule_text = "\n".join([f"- {dt}" for dt in days_times])
+        facilitators_text = "\n".join([f"- {f}" for f in sorted(facilitators)])
+        
+        prompt = ChatPromptTemplate.from_template(template)
+        formatted_prompt = prompt.format(
+            category_name=weekly_event["category_name"],
+            schedule_info=schedule_text,
+            facilitators_info=facilitators_text
+        )
+        
+        try:
+            response = llm.invoke(formatted_prompt)
+            weekly_info = response.content.strip()
+            time_module.sleep(1)  # Rate limiting with explicit module reference
+            return weekly_info
+        except Exception as e:
+            logger.error(f"Error generating weekly info: {e}")
+            return "Schedule and facilitator information available upon registration."
+    
+    def _load_weekly_category_descriptions(self) -> Dict[str, Dict[str, str]]:
+        """Load existing weekly category descriptions from JSON file"""
+        if os.path.exists(self.weekly_descriptions_file):
+            try:
+                with open(self.weekly_descriptions_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.error(f"Error loading weekly category descriptions: {e}")
+        return {}
+    
+    def _save_weekly_category_descriptions(self, descriptions: Dict[str, Dict[str, str]]) -> bool:
+        """Save weekly category descriptions to JSON file"""
+        try:
+            with open(self.weekly_descriptions_file, "w", encoding="utf-8") as f:
+                json.dump(descriptions, f, indent=2)
+            return True
+        except Exception as e:
+            logger.error(f"Error saving weekly category descriptions: {e}")
+            return False
+    
+    # [Keep all the existing methods from the original categorizer.py]
     def _load_events_data(self, file_path: str = "events.json") -> Optional[Dict[str, Any]]:
         """Load events data from JSON file"""
         try:

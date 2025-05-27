@@ -142,6 +142,9 @@ class Step2UI:
                 st.write("No ELP event categories found.")
                 logger.info("No ELP categories to display")
             
+            # Show weekly events
+            self._display_weekly_events(categorized_events)
+            
             # Option to restart categorization
             if st.button("Recategorize Events"):
                 logger.info("User requested to recategorize events")
@@ -153,3 +156,90 @@ class Step2UI:
                 if st.button("Approve Categories and Generate Newsletter"):
                     logger.info("User approved categories and proceeding to step 3")
                     st.rerun()
+    
+    def _display_weekly_events(self, categorized_events: Dict[str, Any]):
+        """Display weekly events section"""
+        # Import streamlit only when needed
+        import streamlit as st
+        
+        st.subheader("Weekly Events")
+        weekly_events = categorized_events.get("weekly_events", [])
+        
+        if weekly_events:
+            st.info(f"Found {len(weekly_events)} weekly event series. These events occur multiple times per week and are displayed as consolidated entries.")
+            
+            for weekly_event in weekly_events:
+                category_name = weekly_event.get("category_name", "Unnamed Weekly Event")
+                description = weekly_event.get("description", "")
+                weekly_info = weekly_event.get("weekly_event_info", "")
+                event_link = weekly_event.get("event_link", "")
+                registration_link = weekly_event.get("event_registration_link", "")
+                
+                with st.expander(f"📅 {category_name} (Weekly Series)"):
+                    # Display description
+                    if description:
+                        st.write("**Description:**")
+                        st.write(description)
+                    
+                    # Display weekly schedule and facilitator info
+                    if weekly_info:
+                        st.write("**Schedule & Facilitators:**")
+                        st.info(weekly_info)
+                    
+                    # Display links
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        if event_link:
+                            st.markdown(f"🔗 [Event Details]({event_link})")
+                    with col2:
+                        if registration_link:
+                            st.markdown(f"📝 [Register Here]({registration_link})")
+                    
+                    # Add some spacing
+                    st.write("")
+            
+            logger.info(f"Displayed {len(weekly_events)} weekly event series")
+        else:
+            st.write("No weekly events found in the specified date range.")
+            logger.info("No weekly events to display")
+    
+    def _create_weekly_events_summary_table(self, weekly_events: list) -> pd.DataFrame:
+        """Create a summary table for weekly events"""
+        summary_data = []
+        
+        for weekly_event in weekly_events:
+            # Extract schedule information from weekly_event_info
+            weekly_info = weekly_event.get("weekly_event_info", "")
+            
+            # Try to extract days and times (basic parsing)
+            import re
+            
+            # Look for day patterns
+            days_match = re.findall(r'(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)s?', weekly_info)
+            days = ", ".join(set(days_match)) if days_match else "See details"
+            
+            # Look for time patterns
+            times_match = re.findall(r'(\d{1,2}:\d{2}[ap]m[\s-]*\d{1,2}:\d{2}[ap]m)', weekly_info)
+            times = "; ".join(set(times_match)) if times_match else "See details"
+            
+            summary_data.append({
+                "Event Series": weekly_event.get("category_name", ""),
+                "Days": days,
+                "Times": times,
+                "Format": "Virtual" if "Virtual" in weekly_info or "Zoom" in weekly_info else "Mixed/Physical"
+            })
+        
+        return pd.DataFrame(summary_data)
+    
+    def _display_weekly_events_summary(self, weekly_events: list):
+        """Display a summary table of weekly events"""
+        # Import streamlit only when needed
+        import streamlit as st
+        
+        if weekly_events:
+            st.write("**Weekly Events Summary:**")
+            summary_df = self._create_weekly_events_summary_table(weekly_events)
+            st.dataframe(summary_df, use_container_width=True)
+            
+            # Add explanation
+            st.caption("📌 Weekly events occur multiple times per week. Click on individual events above for complete schedule details.")
