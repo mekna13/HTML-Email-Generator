@@ -165,9 +165,6 @@ class NewsletterGenerator:
                                 </tbody>
                             </table>
                         </div>
-                        <p class="MsoNormal">
-                            <span style="display:none"><u></u>&nbsp;<u></u></span>
-                        </p>
                         <div align="center">
                             <table border="0" cellspacing="0" cellpadding="0" width="600" style="width:6.25in;color:inherit;font-size:inherit">
                                 <tbody>
@@ -317,8 +314,11 @@ class NewsletterGenerator:
         event_link = weekly_event.get('event_link', '')
         event_registration_link = weekly_event.get('event_registration_link', '')
         
-        # Create a short version of category name for links
-        category_name_short = category_name[:40] + '...' if len(category_name) > 40 else category_name
+        # Convert category name to all caps and add "WEEKLY SESSIONS"
+        category_name_display = f"{category_name.upper()}: WEEKLY SESSIONS"
+        
+        # Use full category name for links (no shortening)
+        category_name_for_links = category_name
         
         return f"""
                         <div align="center">
@@ -329,7 +329,7 @@ class NewsletterGenerator:
                                         <td style="padding:7.5pt 0in 11.25pt 0in">
                                             <p>
                                                 <b><span
-                                                        style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{category_name}</span></b><span
+                                                        style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{category_name_display}</span></b><span
                                                     style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif"><br>
                                                     <span style="color:#500000">{description}</span></span><u></u><u></u>
                                             </p>
@@ -341,12 +341,12 @@ class NewsletterGenerator:
                                                             href="{event_link}"
                                                             target="_blank"
                                                             style="color:#500000">Read more about the
-                                                            {category_name_short} Sessions
+                                                            {category_name_for_links} Sessions
                                                             here</a></b>.<br>
                                                         <b><a href="{event_registration_link}"
                                                             target="_blank"
                                                             style="color:#500000">Register for the
-                                                            {category_name_short}
+                                                            {category_name_for_links}
                                                             here</a></b>.</span></span><u></u><u></u>
                                             </p>
                                         </td>
@@ -386,13 +386,6 @@ class NewsletterGenerator:
         event_location = event.get('event_location', '')
         event_facilitators = event.get('event_facilitators', '')
         event_description = event.get('event_description', '')
-        
-        # Shorten the description for the newsletter
-        if len(event_description) > 150:
-            short_description = event_description[:150] + "..."
-        else:
-            short_description = event_description
-        
         event_registration_link = event.get('event_registration_link', '')
         
         # Convert event title to uppercase
@@ -401,8 +394,8 @@ class NewsletterGenerator:
         # Generate a short calendar icon string based on the date
         calendar_icon_alt = event_date.split(',')[0].strip() if ',' in event_date else event_date
         
-        # Short version of event name for links (but keep original case for readability)
-        event_name_short = event_name[:40] + '...' if len(event_name) > 40 else event_name
+        # Use full event name for links (no shortening)
+        event_name_for_links = event_name
         
         return f"""
                             <div align="center">
@@ -420,9 +413,9 @@ class NewsletterGenerator:
                                                     <span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">{event_date}, {event_location}<br>
                                                     Time: {event_time}<br>
                                                     <b>Facilitators</b>: {event_facilitators}<br>
-                                                    <b>Description</b>: {short_description}</span><br>
-                                                    <b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif"><a href="{event_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Read more about the {event_name_short} event here</span></a></span></b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">.<br>
-                                                    <b><a href="{event_registration_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Register for the {event_name_short} event here</span></a></b>.</span><u></u><u></u>
+                                                    <b>Description</b>: {event_description}</span><br>
+                                                    <b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif"><a href="{event_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Read more about the {event_name_for_links} event here</span></a></span></b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">.<br>
+                                                    <b><a href="{event_registration_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Register for the {event_name_for_links} event here</span></a></b>.</span><u></u><u></u>
                                                 </p>
                                             </td>
                                         </tr>

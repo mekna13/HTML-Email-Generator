@@ -1,12 +1,12 @@
 {
   "date_range": {
     "start_date": "2025-06-02",
-    "end_date": "2025-06-13"
+    "end_date": "2025-06-14"
   },
   "cte_events": [
     {
       "category_name": "GMA Series",
-      "description": "The GMA Series at Texas A&M University offers a dynamic range of virtual events centered around enhancing communication, aligning expectations, and promoting professional development. This enriching platform fosters growth and innovation, providing attendees with invaluable insights and best practices. Faculty and staff are invited to join us for these engaging sessions to refine their skills, bolster their professional acumen, and enrich the Aggie community. Sign up today and propel your career to new heights!",
+      "description": "Immerse yourself in the GMA Series at Texas A&M University, a suite of virtual events designed to enhance your professional skills. From effective communication to aligning expectations and promoting professional development, these workshops offer invaluable insights to empower your career growth. Join us to learn, evolve, and contribute more effectively to our vibrant academic community. Sign up today and transform your professional journey!",
       "events": [
         {
           "event_name": "GMA | Maintaining Effective Communication | Thursday, June 5, 10:00am - 12:00pm | Virtual",
@@ -42,7 +42,7 @@
     },
     {
       "category_name": "Digital Accessibility Series",
-      "description": "Embark on Texas A&M's Digital Accessibility Series, a comprehensive exploration of the importance and impact of digital content accessibility in education. These enlightening events underscore the necessity of inclusivity in the digital realm, ensuring all students have equal access to content. Gain valuable insights from the overview and deep-dive sessions, enhancing your understanding of the mandated accessibility standards. Don't miss this exciting opportunity to expand your knowledge, contribute to inclusive learning environments, and foster equality in our digital world. Sign up today and be part of the change!",
+      "description": "Dive into the Digital Accessibility Series at Texas A&M University! These enlightening events offer a deep understanding of digital accessibility and its significance in modern education. Discover how to create inclusive digital content, ensuring all students can participate equally. Don't miss out, faculty and staff - seize this opportunity to foster a more accessible, inclusive digital campus!",
       "events": [
         {
           "event_name": "Digital Accessibility: An Overview",
@@ -67,8 +67,8 @@
       ]
     },
     {
-      "category_name": "Workshop",
-      "description": "Unleash the potential of your online teaching with our insightful Workshops at Texas A&M University. Elevate your tech savvy with sessions like \"Proctoring Your Exams Using Respondus Lock Down Browser\", designed to streamline and secure your digital assessments. Acquire invaluable skills, enhance your teaching methods, and stay ahead of the education technology curve. Don't miss out, register today and revolutionize your virtual classroom experience!",
+      "category_name": "Educational Tools Workshop",
+      "description": "Deepen your teaching prowess with Texas A&M's Educational Tools Workshop series! Master tech-integrated teaching strategies, learn efficient grade tracking, and ensure academic integrity with robust proctoring tools. Join us and transform your teaching effectiveness for the digital age, enhancing student engagement and success. Sign up today!",
       "events": [
         {
           "event_name": "Proctoring Your Exams Using Respondus Lock Down Browser",
@@ -79,13 +79,7 @@
           "event_facilitators": "Rebecca Schkade - Respondus\nDr. Armanto Sutedjo - Center for Teaching Excellence",
           "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44783",
           "event_description": "This workshop is designed to provide instructors with a comprehensive understanding of Respondus, a proctoring tool for creating and managing online assessments. Participants will learn how to navigate the Respondus interface, create and customize exams, and implement best practices for online assessments.\nBy the end of the workshop, attendees will be equipped with the knowledge and skills to effectively use Respondus to enhance their online teaching and assessment strategies.\nLearning Outcomes:\nParticipants will be able to:\n1) Identify key features of Respondus Lock Down Browser for creating and managing proctored assessments for their course.\n2) Build a proctored assessment in Canvas using Respondus Lock Down Browser.\n3) Explore best practices for using Respondus Lock Down Browser to enhance the quality and integrity of their assessments.\n\nRegister Here: https://ers.tamu.edu/register.aspx?scheduleid=44783"
-        }
-      ]
-    },
-    {
-      "category_name": "Canvas Training",
-      "description": "\"Master the art of Canvas, the leading learning management system, at Texas A&M's Canvas Training events! These sessions, including Canvas Gradebook Setup, offer faculty and staff the opportunity to streamline their teaching processes, effectively track student progression and enhance the overall teaching and learning experience. Don't miss this chance to boost your tech-savvy skills - sign up today and take your teaching to the next level!\"",
-      "events": [
+        },
         {
           "event_name": "Canvas Gradebook Setup",
           "event_link": "https://calendar.tamu.edu/cte/event/353456-canvas-gradebook-setup",
@@ -102,7 +96,7 @@
   "elp_events": [
     {
       "category_name": "English Language Proficiency Practice Group For Instructors",
-      "description": "Join the vibrant community of international educators at Texas A&M in the English Language Proficiency Practice Group for Instructors series. These interactive workshops, tailored for graduate students, faculty, post-docs, and visiting scholars, enhance your English language skills and teaching strategies. Delve into prominent words, discourse cues, active learning, and more. Elevate your teaching prowess, engage more effectively with students, and confidently navigate unexpected classroom situations. Sign up today and transform your academic journey!",
+      "description": "\"Enhance your teaching skills at Texas A&M University's English Language Proficiency Practice Group for Instructors! These engaging and interactive workshops are designed for international graduate students, faculty, post-docs, and visiting scholars. The series provides valuable insights into effective communication, classroom management, and active learning strategies. Don't miss this opportunity to broaden your educational toolkit and foster a more inclusive learning environment!\"",
       "events": [
         {
           "event_name": "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 5): Prominent Words And Discourse Cues",
@@ -178,7 +172,7 @@
     },
     {
       "category_name": "English Language Proficiency Workshops",
-      "description": "Unleash your linguistic prowess through Texas A&M's English Language Proficiency Workshops! These interactive sessions will equip you with expert grammar skills and effective verbal communication strategies, eliminating any language barriers in your professional journey. By mastering the nuances of verb tenses and modal verbs, you can relay clear instructions and engage in persuasive dialogues. Faculty and staff, sign up today to benefit from these enriching workshops that will elevate your English language proficiency to new heights!",
+      "description": "\"Boost your communication skills with our English Language Proficiency Workshops at Texas A&M University. Master the art of using correct verb tenses and modal verbs, and sharpen your English language skills for effective communication. Come, enhance your understanding and gain confidence in your interactions. Don't miss this chance to refine your linguistic abilities and elevate your professional prowess!\"",
       "events": [
         {
           "event_name": "Don\u2019T Tense Up About Verb Tenses: Choosing The Right Tense To Communicate Effectively (English Language Proficiency)",
@@ -206,24 +200,24 @@
   "weekly_events": [
     {
       "category_name": "Microteaching Practice (English Language Proficiency)",
-      "description": "Join us for our weekly Microteaching Practice series, a transformative opportunity to refine your teaching prowess and public speaking skills. Each session allows you to deliver a short presentation, and receive insightful feedback from our skilled consultants and students. This experience promises to enhance your communication skills, boost your confidence, and improve student engagement in your classroom. Whether you're a seasoned educator or a staff member seeking improvement, this series offers invaluable learning opportunities. Sign up today and take the first step towards empowering your teaching journey at Texas A&M University.",
+      "description": "Join us at Texas A&M's weekly Microteaching Practice event series, a workshop designed to bolster your teaching and public speaking abilities. Hone your skills through engaging 5-minute demonstration lessons in a supportive, low-stakes setting. Get valuable insights and constructive feedback from experienced consultants and eager undergraduate students. Don't miss this opportunity to refine your pedagogy and boost your confidence. Sign up now and elevate your teaching journey!",
       "event_link": "https://calendar.tamu.edu/elp/event/354390-microteaching-practice-english-language-proficiency",
       "event_registration_link": "https://ers.tamu.edu/event/8325",
-      "weekly_event_info": "The Microteaching Practice series for English Language Proficiency happens virtually on Mondays and Wednesdays, from 8:30am - 9:30am and 10:00am - 11:00am CDT, respectively. Facilitated by Ginessa Payne and Michele Vick from the Center for Teaching Excellence."
+      "weekly_event_info": "The Microteaching Practice series for English Language Proficiency takes place virtually on Mondays, 8:30-9:30am CDT, and Wednesdays, 10:00-11:00am CDT. Sessions are facilitated by Ginessa Payne and Michele Vick from the Center for Teaching Excellence."
     },
     {
       "category_name": "ELP Journal Club: A Conversation Circle For Text-Based Discussions",
-      "description": "Join us for the ELP Journal Club, a transformative weekly series at Texas A&M University. Tailored specifically for international TAs and faculty, this event provides participants the opportunity to enhance their reading and discussion skills through the analysis of pre-selected texts. With each session, you'll gain confidence, expand your perspectives, and foster meaningful academic conversations. Don't miss this chance to become a more effective, engaging educator. Sign up today and unlock a new level of academic excellence!",
+      "description": "Join the ELP Journal Club, a dynamic conversation circle where international TAs and faculty gather to enhance their skills in text-based discussions. Engage in stimulating dialogues, hone your leadership abilities, and boost your confidence in reading aloud. With a short article shared in advance each week, you're empowered to lead and participate actively. Unleash your potential and enrich your academic journey at Texas A&M University. Don't miss out - sign up today and contribute to this vibrant academic exchange!",
       "event_link": "https://calendar.tamu.edu/elp/event/354401-elp-journal-club-a-conversation-circle-for-text-based",
       "event_registration_link": "https://ers.tamu.edu/event/10889",
-      "weekly_event_info": "The ELP Journal Club meets virtually every Monday from 11:00am - 12:00pm CDT, facilitated by Michele Vick from the Center for Teaching Excellence."
+      "weekly_event_info": "The ELP Journal Club, a platform for text-based discussions, is facilitated by Michele Vick from the Center for Teaching Excellence. Join us virtually every Monday from 11:00am - 12:00pm CDT."
     },
     {
       "category_name": "Conversation Circle For English Language Proficiency",
-      "description": "Join us weekly for the Conversation Circle, an enriching platform designed to enhance English language proficiency through immersive dialogue. Dive into stimulating discussions centered around diverse cultural topics, including the unique facets of American academia. This interactive series promises the development of your spontaneous speaking, active listening, and conversational transitions. By engaging with a variety of speakers, you'll cultivate a deeper understanding and confidence in English communication. Don\u2019t miss this opportunity to elevate your linguistic skills and connect with the Texas A&M community.",
+      "description": "Immerse yourself in the enriching world of the Conversation Circle at Texas A&M University, a weekly event series designed to enhance English language proficiency. Dive into enlightening group discussions on diverse cultural topics, honing your spontaneous speaking and active listening skills. Experience the benefits of conversational turn-taking and discover the nuances of American university culture. Don't miss this wonderful opportunity to communicate with speakers from various backgrounds. Join us and transform your linguistic abilities to new heights!",
       "event_link": "https://calendar.tamu.edu/elp/event/354413-conversation-circle-for-english-language",
       "event_registration_link": "https://ers.tamu.edu/event/7534",
-      "weekly_event_info": "The \"Conversation Circle For English Language Proficiency\" series takes place virtually on Tuesdays and Thursdays from 8:00am - 9:00am and 9:00am - 10:00am CDT respectively, and physically in BLOCKER 236 A on Wednesdays from 1:00pm - 2:00pm CDT. Facilitators are Michele Vick and Sarah Vargas from the Center for Teaching Excellence."
+      "weekly_event_info": "The \"Conversation Circle For English Language Proficiency\" series occurs virtually on Tuesdays and Thursdays at 8:00am - 9:00am and 9:00am - 10:00am CDT respectively, and in-person on Wednesdays at 1:00pm - 2:00pm CDT in BLOCKER 236 A. Facilitators are Michele Vick and Sarah Vargas from the Center for Teaching Excellence."
     }
   ]
 }

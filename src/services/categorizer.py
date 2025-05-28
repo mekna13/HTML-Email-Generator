@@ -344,7 +344,7 @@ class EventCategorizer:
         import time as time_module  # Import with alias to avoid conflicts
         
         template = """
-        Create an engaging 5-line description for a weekly academic event series at Texas A&M University.
+        Create an engaging 4-line description for a weekly academic event series at Texas A&M University.
         
         Event Series: {category_name}
         
@@ -634,7 +634,7 @@ class EventCategorizer:
         2. When titles follow patterns like "Series Name: Session X" or "Series Name (Part X)", group by the base series name
         3. For events with dates in titles like "Series (May 2025)", group by the base name without the date
         4. The goal is to create intuitive groupings that would make sense in a newsletter
-        5. Create between 1-8 categories total, with clear names that describe the event type
+        5. Create between 1-5 categories total, with clear names that describe the event type
         6. Every event must be assigned to exactly one category
 
         EXAMPLES:
@@ -761,7 +761,7 @@ class EventCategorizer:
         """
         # Create prompt template for description generation
         template = """
-        Create an engaging 4-5 line description for a category of academic events at Texas A&M University.
+        Create an engaging 3-4 line description for a category of academic events at Texas A&M University.
         
         Category: {category_name}
         
@@ -775,7 +775,7 @@ class EventCategorizer:
         - Uses an enthusiastic, professional tone
         
         DO NOT include specific dates, times, locations, or facilitator names.
-        DO NOT exceed 5 lines of text.
+        DO NOT exceed 4 lines of text.
         
         Description:
         """
