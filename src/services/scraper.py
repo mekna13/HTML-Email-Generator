@@ -124,90 +124,90 @@ class EventScraper:
             logger.warning(f"Could not parse date '{event_date}', including event anyway")
             return False
     
+
+        # Update this section in your _scrape_events_from_url method
+
     def _scrape_events_from_url(self, url: str, start_date: date, end_date: date) -> List[Dict[str, Any]]:
         """Scrape events from a specified URL within the date range"""
-        # Set up Chrome options
+        
+        # Set up Chrome options for Debian/cloud deployment
         chrome_options = Options()
-        chrome_options.add_argument("--headless")  # Run in background
-        chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--remote-debugging-port=9222")
+        chrome_options.add_argument("--disable-web-security")
+        chrome_options.add_argument("--allow-running-insecure-content")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-plugins")
+        chrome_options.add_argument("--disable-images")
+        chrome_options.add_argument("--disable-logging")
+        chrome_options.add_argument("--log-level=3")
         
-        # Initialize the driver with automatic ChromeDriver installation
-        driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()),
-            options=chrome_options
-        )
+        driver = None
         
-        try:
-            # Load the page
-            driver.get(url)
-            
-            # Wait for events to load
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "lw_cal_event"))
-            )
-            
-            # Optional: Add a small delay to ensure everything is fully loaded
-            time.sleep(2)
-            
-            # First, collect all basic information and URLs
-            event_data = []
-            event_elements = driver.find_elements(By.CLASS_NAME, "lw_cal_event")
-            
-            for element in event_elements:
-                try:
-                    # Extract event details
-                    title_element = element.find_element(By.CSS_SELECTOR, "h4 a")
-                    event_name = title_element.text
-                    event_link = title_element.get_attribute("href")
+        # Try Debian-compatible Chrome/Chromium paths
+        chrome_paths = [
+            "/usr/bin/chromium",           # Primary Debian path
+            "/usr/bin/chromium-browser",   # Fallback
+            "/usr/bin/google-chrome",      
+            "/usr/bin/google-chrome-stable"
+        ]
+        
+        for chrome_path in chrome_paths:
+            try:
+                import os
+                if os.path.exists(chrome_path):
+                    logger.info(f"Found Chrome at: {chrome_path}")
+                    chrome_options.binary_location = chrome_path
                     
-                    # Get other details
-                    date_time = element.find_element(By.CLASS_NAME, "date-time").text
-                    event_date = date_time.split("·")[0].strip() if "·" in date_time else date_time
-                    event_time = date_time.split("·")[1].strip() if "·" in date_time else ""
+                    # Try with system chromedriver first
+                    chromedriver_paths = [
+                        "/usr/bin/chromedriver",       # Standard path
+                        "/usr/bin/chromium-driver",    # Debian package name
+                        "/usr/lib/chromium/chromedriver"  # Alternative path
+                    ]
                     
-                    # Check if the event is within the specified date range
-                    if not self._is_within_date_range(event_date, start_date, end_date):
-                        continue  # Skip events outside the date range
+                    for driver_path in chromedriver_paths:
+                        if os.path.exists(driver_path):
+                            logger.info(f"Using system chromedriver: {driver_path}")
+                            service = Service(driver_path)
+                            driver = webdriver.Chrome(service=service, options=chrome_options)
+                            break
                     
+                    if driver:
+                        break
+                        
+                    # Fallback to webdriver-manager if system driver not found
                     try:
-                        location = element.find_element(By.CLASS_NAME, "map-marker").text
-                    except (NoSuchElementException, StaleElementReferenceException):
-                        location = ""
-                    
-                    # Create event object with basic info
-                    event = {
-                        "event_name": event_name,
-                        "event_link": event_link,
-                        "event_date": event_date,
-                        "event_time": event_time,
-                        "event_location": location,
-                        "event_facilitators": "",
-                        "event_registration_link": "",
-                        "event_description": ""
-                    }
-                    
-                    event_data.append(event)
-                except (StaleElementReferenceException, NoSuchElementException) as e:
-                    logger.warning(f"Skipping event due to: {str(e)}")
-                    continue
-            
-            # Now, visit each event page to get additional details
-            for event in event_data:
-                try:
-                    # Visit the event detail page to get additional information
-                    event = self._get_event_details(driver, event)
-                    logger.info(f"Processed: {event['event_name']}")
-                except Exception as e:
-                    logger.warning(f"Error getting details for {event['event_name']}: {str(e)}")
-            
-            return event_data
-            
+                        logger.info("Trying webdriver-manager...")
+                        driver = webdriver.Chrome(
+                            service=Service(ChromeDriverManager().install()),
+                            options=chrome_options
+                        )
+                        break
+                    except Exception as e:
+                        logger.warning(f"WebDriver manager failed with {chrome_path}: {e}")
+                        continue
+                        
+            except Exception as e:
+                logger.warning(f"Failed to use Chrome at {chrome_path}: {e}")
+                continue
+        
+        if not driver:
+            error_msg = "Failed to initialize Chrome driver with any available method"
+            logger.error(error_msg)
+            raise Exception(error_msg)
+        
+        # Rest of your existing scraping logic...
+        try:
+            logger.info(f"Successfully initialized Chrome driver, loading: {url}")
+            # ... existing code for scraping
         finally:
-            # Always close the driver
-            driver.quit()
-    
+            if driver:
+                driver.quit()
     def _get_event_details(self, driver, event: Dict[str, Any]) -> Dict[str, Any]:
         """Visit the event detail page and extract additional information"""
         try:
