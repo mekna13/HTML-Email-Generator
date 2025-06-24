@@ -1,0 +1,3 @@
+chromium-driver
+chromium-browser
+xvfb

@@ -398,6 +398,24 @@ class NewsletterGenerator:
         # Use full event name for links (no shortening)
         event_name_for_links = event_name
         
+        # Build the description section conditionally
+        description_parts = []
+        
+        # Always include date, location, and time
+        description_parts.append(f"{event_date}, {event_location}<br>")
+        description_parts.append(f"Time: {event_time}<br>")
+        
+        # Conditionally add facilitators if they exist and are not empty
+        if event_facilitators and event_facilitators.strip():
+            description_parts.append(f"<b>Facilitators</b>: {event_facilitators}<br>")
+        
+        # Conditionally add description if it exists and is not empty
+        if event_description and event_description.strip():
+            description_parts.append(f"<b>Description</b>: {event_description}")
+        
+        # Join all parts together
+        description_html = "".join(description_parts)
+        
         return f"""
             <div align="center">
                 <table border="0" cellspacing="0" cellpadding="0" width="600" style="width:6.25in;color:inherit;font-size:inherit">
@@ -419,10 +437,7 @@ class NewsletterGenerator:
                             <td valign="top" style="padding:0in 0in 11.25pt 0in">
                                 <p class="MsoNormal">
                                     <b><a href="{event_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{event_name_uppercase}</span></a></b><br>
-                                    <span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">{event_date}, {event_location}<br>
-                                    Time: {event_time}<br>
-                                    <b>Facilitators</b>: {event_facilitators}<br>
-                                    <b>Description</b>: {event_description}</span><br>
+                                    <span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">{description_html}</span><br>
                                     <b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif"><a href="{event_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Read more about the {event_name_for_links} event here</span></a></span></b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">.<br>
                                     <b><a href="{event_registration_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Register for the {event_name_for_links} event here</span></a></b>.</span><u></u><u></u>
                                 </p>
