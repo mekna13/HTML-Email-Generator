@@ -2,5 +2,7 @@
 from .logger import app_logger
 from .state_manager import StateManager
 from .process_runner import ProcessRunner
+from .event_validator import EventValidator
+from .data_persistence import DataPersistence
 
 __all__ = ['app_logger', 'StateManager', 'ProcessRunner']
