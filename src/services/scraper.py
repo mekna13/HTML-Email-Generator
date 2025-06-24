@@ -122,7 +122,7 @@ class EventScraper:
         except:
             # If there's an error in parsing, include the event to be safe
             logger.warning(f"Could not parse date '{event_date}', including event anyway")
-            return True
+            return False
     
     def _scrape_events_from_url(self, url: str, start_date: date, end_date: date) -> List[Dict[str, Any]]:
         """Scrape events from a specified URL within the date range"""

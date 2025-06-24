@@ -78,11 +78,21 @@ class EventCategorizer:
             if not categorization_llm:
                 raise Exception("Failed to initialize LLM. Cannot proceed with categorization.")
             
-            # Categorize regular events using LLM
-            categorized_cte = self._categorize_events_with_llm(cte_events, "CTE", categorization_llm)
-            categorized_elp = self._categorize_events_with_llm(elp_events, "ELP", categorization_llm)
+            # Load historical categorization cache for context
+            categorization_history = self._load_categorization_history()
             
-            # Process weekly events
+            # Categorize regular events using LLM with historical context
+            categorized_cte = self._categorize_events_with_llm_context(
+                cte_events, "CTE", categorization_llm, categorization_history.get("CTE", {})
+            )
+            categorized_elp = self._categorize_events_with_llm_context(
+                elp_events, "ELP", categorization_llm, categorization_history.get("ELP", {})
+            )
+            
+            # Update categorization history with new events
+            self._update_categorization_history(categorized_cte, categorized_elp)
+            
+            # Process weekly events (keep existing system)
             weekly_events = self._process_weekly_events(cte_weekly_events + elp_weekly_events, categorization_llm)
             
             # Load existing descriptions
@@ -148,13 +158,28 @@ class EventCategorizer:
                 self._save_category_descriptions(stored_descriptions)
                 self._save_weekly_category_descriptions(stored_weekly_descriptions)
             
-            # Apply descriptions to categorized events
+            # If we don't have description_llm but still need to process event descriptions,
+            # initialize it now for event description shortening
+            if not description_llm:
+                logger.info("Initializing LLM for event description shortening...")
+                description_llm = self._initialize_llm(api_key, model, temperature=0.7)
+            
+            # Apply descriptions to categorized events and process individual event descriptions
             for category in categorized_cte + categorized_elp:
                 category_name = category["category_name"]
                 if category_name in stored_descriptions:
                     category["description"] = stored_descriptions[category_name]
                 else:
                     category["description"] = f"Events related to {category_name}."
+                
+                # Process individual event descriptions with LLM
+                if description_llm:
+                    for event in category["events"]:
+                        if event.get("event_description"):
+                            original_desc = event["event_description"]
+                            shortened_desc = self._shorten_event_description_with_llm(original_desc, description_llm)
+                            event["event_description"] = shortened_desc
+                            logger.info(f"Shortened description for event: {event.get('event_name', 'Unknown')}")
             
             # Apply descriptions to weekly events
             for weekly_event in weekly_events:
@@ -190,6 +215,303 @@ class EventCategorizer:
         except Exception as e:
             logger.error(f"Error during categorization: {str(e)}")
             return (False, {"error": f"Error during categorization: {str(e)}"})
+    
+    def _load_categorization_history(self) -> Dict[str, Dict[str, List[str]]]:
+        """
+        Load categorization history from cache file
+        
+        Returns:
+            Dictionary with structure: {"CTE": {"Category Name": ["Event Title 1", "Event Title 2"]}, "ELP": {...}}
+        """
+        if os.path.exists(self.categorization_cache_file):
+            try:
+                with open(self.categorization_cache_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.error(f"Error loading categorization history: {e}")
+        
+        # Return empty structure if file doesn't exist or can't be loaded
+        return {"CTE": {}, "ELP": {}}
+    
+    def _save_categorization_history(self, history: Dict[str, Dict[str, List[str]]]) -> bool:
+        """
+        Save categorization history to cache file
+        
+        Args:
+            history: Dictionary with structure {"CTE": {"Category Name": ["Event Title 1"]}, "ELP": {...}}
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            with open(self.categorization_cache_file, "w", encoding="utf-8") as f:
+                json.dump(history, f, indent=2)
+            return True
+        except Exception as e:
+            logger.error(f"Error saving categorization history: {e}")
+            return False
+    
+    def _update_categorization_history(self, categorized_cte: List[Dict[str, Any]], categorized_elp: List[Dict[str, Any]]) -> None:
+        """
+        Update the categorization history with newly categorized events
+        
+        Args:
+            categorized_cte: List of CTE categories with events
+            categorized_elp: List of ELP categories with events
+        """
+        # Load existing history
+        history = self._load_categorization_history()
+        
+        # Update CTE categories
+        for category in categorized_cte:
+            category_name = category["category_name"]
+            if category_name not in history["CTE"]:
+                history["CTE"][category_name] = []
+            
+            # Add event titles to the category (avoid duplicates)
+            for event in category["events"]:
+                event_title = event.get("event_name", "")
+                if event_title and event_title not in history["CTE"][category_name]:
+                    history["CTE"][category_name].append(event_title)
+        
+        # Update ELP categories
+        for category in categorized_elp:
+            category_name = category["category_name"]
+            if category_name not in history["ELP"]:
+                history["ELP"][category_name] = []
+            
+            # Add event titles to the category (avoid duplicates)
+            for event in category["events"]:
+                event_title = event.get("event_name", "")
+                if event_title and event_title not in history["ELP"][category_name]:
+                    history["ELP"][category_name].append(event_title)
+        
+        # Save updated history
+        self._save_categorization_history(history)
+        logger.info("Updated categorization history with new events")
+    
+    def _format_categorization_history_for_prompt(self, history: Dict[str, List[str]]) -> str:
+        """
+        Format categorization history for inclusion in LLM prompt
+        
+        Args:
+            history: Dictionary mapping category names to lists of event titles
+            
+        Returns:
+            Formatted string for prompt
+        """
+        if not history:
+            return "No previous categorization history available."
+        
+        formatted_lines = []
+        for category_name, event_titles in history.items():
+            if event_titles:  # Only include categories that have events
+                formatted_lines.append(f"**{category_name}:**")
+                for title in event_titles:
+                    formatted_lines.append(f"  - {title}")
+                formatted_lines.append("")  # Empty line for separation
+        
+        return "\n".join(formatted_lines) if formatted_lines else "No previous categorization history available."
+    
+    def _categorize_events_with_llm_context(self, events: List[Dict[str, Any]], event_type: str, llm: ChatOpenAI, history: Dict[str, List[str]]) -> List[Dict[str, Any]]:
+        """
+        Use LLM to categorize events with historical context
+        
+        Args:
+            events: List of event objects
+            event_type: String indicating "CTE" or "ELP" events
+            llm: Initialized LangChain LLM
+            history: Historical categorization data for this event type
+            
+        Returns:
+            Categorized events structure
+        """
+        if not events or len(events) == 0:
+            logger.info(f"No {event_type} events to categorize")
+            return []
+        
+        logger.info(f"Categorizing {event_type} events with LLM using historical context...")
+        
+        # Format events for the prompt
+        formatted_events = []
+        for i, event in enumerate(events):
+            # Extract relevant fields for categorization
+            name = event.get("event_name", "")
+            description = event.get("event_description", "")
+            date = event.get("event_date", "")
+            
+            # Truncate description if too long
+            if description and len(description) > 200:
+                description = description[:200] + "..."
+                
+            formatted_events.append(f"Event {i}:\nName: {name}\nDate: {date}\nDescription: {description}\n")
+        
+        # Join formatted events into a string
+        events_text = "\n".join(formatted_events)
+        
+        # Format historical context
+        history_text = self._format_categorization_history_for_prompt(history)
+        
+        # Create prompt for categorization with historical context
+        template = """
+            You are an expert academic event organizer with years of experience. I need you to categorize university events into logical series or groups.
+
+            HISTORICAL CONTEXT - Previous Event Categories:
+            {history_text}
+
+            CATEGORIZATION RULES:
+            1. PRIORITIZE CONTINUITY: If current events explicitly belong to existing categories from the historical context, use those exact category names
+            2. SERIES GROUPING: Only events with explicit series indicators in their titles should be grouped together (e.g., "Digital Accessibility Series – Session X", "Workshop Series: Part 2", "Training Series – Session 1")
+            3. Remove dates from category names (e.g., "Series (May 2025)" becomes "Series")
+            4. Create between 1-5 categories total with clear, descriptive names
+            5. Only create new categories if events don't fit into existing ones
+            6. Events that don't belong to any series can be grouped into "Additional Events"
+
+            KEY PRINCIPLE: Similar content does NOT automatically mean same series - look for explicit naming patterns, not just topic similarity.
+
+            EXAMPLES:
+            ✅ CORRECT: "Digital Accessibility Series – Session 1" and "Digital Accessibility Series – Session 2" → "Digital Accessibility Series"
+            ❌ INCORRECT: "Creating Accessible Content" → Should NOT go in "Digital Accessibility Series" even if content is similar
+            ✅ CORRECT: "Creating Accessible Content" → Goes in "Additional Events" or new appropriate category
+
+            CURRENT EVENTS TO CATEGORIZE:
+            {events_text}
+
+            Provide your categorization as a JSON object with the following format:
+            1. A "categories" array containing objects with "category_name" and "description" (leave description blank)
+            2. An "event_assignments" object mapping event indices to category names
+
+            Example response format:
+            {{
+            "categories": [
+                {{
+                "category_name": "Digital Accessibility Series",
+                "description": ""
+                }},
+                {{
+                "category_name": "Additional Events",
+                "description": ""
+                }}
+            ],
+            "event_assignments": {{
+                "0": "Digital Accessibility Series",
+                "1": "Digital Accessibility Series",
+                "2": "Additional Events"
+            }}
+            }}
+
+            IMPORTANT: Prefer existing category names from historical context when events explicitly belong to those series. Focus on creating logical, meaningful categories.
+            Only output the JSON object, nothing else.
+        """
+        
+        # Create and format prompt
+        prompt = ChatPromptTemplate.from_template(template)
+        formatted_prompt = prompt.format(
+            history_text=history_text,
+            events_text=events_text,
+            max_index=len(events) - 1
+        )
+        
+        # Get response from LLM
+        try:
+            response = llm.invoke(formatted_prompt)
+            response_content = response.content.strip()
+            
+            # Extract JSON if wrapped in markdown code blocks
+            if "```json" in response_content:
+                response_content = response_content.split("```json")[1].split("```")[0].strip()
+            elif "```" in response_content:
+                response_content = response_content.split("```")[1].split("```")[0].strip()
+                
+            # Parse JSON
+            categorization = json.loads(response_content)
+            
+            # Get categories and event assignments
+            categories = categorization.get("categories", [])
+            event_assignments = categorization.get("event_assignments", {})
+            
+            # Create categorized events
+            categorized_events = []
+            category_map = {cat["category_name"]: {"category_name": cat["category_name"], "description": "", "events": []} 
+                             for cat in categories}
+            
+            # Assign events to categories
+            for event_idx, category_name in event_assignments.items():
+                event_idx = int(event_idx)
+                if 0 <= event_idx < len(events) and category_name in category_map:
+                    category_map[category_name]["events"].append(events[event_idx])
+            
+            # Convert to list and filter empty categories
+            categorized_events = [cat for cat in category_map.values() if cat["events"]]
+            
+            # Sort categories by number of events (descending)
+            categorized_events.sort(key=lambda x: len(x["events"]), reverse=True)
+            
+            logger.info(f"Created {len(categorized_events)} categories for {event_type} events")
+            for category in categorized_events:
+                logger.info(f"  - {category['category_name']}: {len(category['events'])} events")
+            
+            return categorized_events
+        
+        except Exception as e:
+            logger.error(f"Error in LLM categorization: {e}")
+            logger.info("Falling back to basic categorization")
+            
+            # Simple fallback categorization
+            category_obj = {
+                "category_name": f"{event_type} Events",
+                "description": "",
+                "events": events.copy()
+            }
+            
+            return [category_obj]
+    
+    def _shorten_event_description_with_llm(self, original_description: str, llm: ChatOpenAI) -> str:
+        """
+        Shorten and clean up event description using LLM
+        
+        Args:
+            original_description: Original event description from scraper
+            llm: Initialized LangChain LLM
+            
+        Returns:
+            Shortened and cleaned description
+        """
+        import time as time_module  # Import with alias to avoid conflicts
+        
+        # Skip processing if description is already short or empty
+        if not original_description or len(original_description) <= 200:
+            return original_description
+        
+        template = """
+        Please rewrite this event description to be concise and focused. Follow these guidelines:
+        
+        1. Maximum 4 lines of text
+        2. Remove any specific dates, times, locations, or facilitator names
+        3. Focus on what participants will learn or gain from the event
+        4. Keep the core educational content and learning outcomes
+        5. Use clear, professional language appropriate for academic faculty
+        6. Do not include registration information or contact details
+        7. Do not include "Learning Outcomes:" sections or numbered lists
+        
+        Original Description:
+        {original_description}
+        
+        Shortened Description:
+        """
+        
+        prompt = ChatPromptTemplate.from_template(template)
+        formatted_prompt = prompt.format(original_description=original_description)
+        
+        try:
+            response = llm.invoke(formatted_prompt)
+            shortened_description = response.content.strip()
+            time_module.sleep(0.5)  # Rate limiting with explicit module reference
+            return shortened_description
+        except Exception as e:
+            logger.error(f"Error shortening event description: {e}")
+            # Fallback: return first 200 characters if LLM fails
+            return original_description[:200] + "..." if len(original_description) > 200 else original_description
     
     def _separate_weekly_events(self, events: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
         """
@@ -476,7 +798,6 @@ class EventCategorizer:
             logger.error(f"Error saving weekly category descriptions: {e}")
             return False
     
-    # [Keep all the existing methods from the original categorizer.py]
     def _load_events_data(self, file_path: str = "events.json") -> Optional[Dict[str, Any]]:
         """Load events data from JSON file"""
         try:
@@ -507,26 +828,6 @@ class EventCategorizer:
             logger.error(f"Error saving category descriptions: {e}")
             return False
     
-    def _load_categorization_cache(self) -> Dict[str, Any]:
-        """Load cached categorization results"""
-        if os.path.exists(self.categorization_cache_file):
-            try:
-                with open(self.categorization_cache_file, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception as e:
-                logger.error(f"Error loading categorization cache: {e}")
-        return {}
-    
-    def _save_categorization_cache(self, cache: Dict[str, Any]) -> bool:
-        """Save categorization results to cache"""
-        try:
-            with open(self.categorization_cache_file, "w", encoding="utf-8") as f:
-                json.dump(cache, f, indent=2)
-            return True
-        except Exception as e:
-            logger.error(f"Error saving categorization cache: {e}")
-            return False
-    
     def _initialize_llm(self, api_key: str, model: str, temperature: float = 0.1) -> Optional[ChatOpenAI]:
         """Initialize the LangChain LLM"""
         try:
@@ -539,213 +840,6 @@ class EventCategorizer:
         except Exception as e:
             logger.error(f"Error initializing LLM: {e}")
             return None
-    
-    def _get_event_hash(self, event: Dict[str, Any]) -> str:
-        """Create a deterministic hash for an event based on its name and date"""
-        event_name = event.get("event_name", "")
-        event_date = event.get("event_date", "")
-        return f"{event_name}|{event_date}"
-    
-    def _categorize_events_with_llm(self, events: List[Dict[str, Any]], event_type: str, llm: ChatOpenAI) -> List[Dict[str, Any]]:
-        """
-        Use LLM to categorize events in a deterministic way
-        
-        Args:
-            events: List of event objects
-            event_type: String indicating "cte" or "elp" events
-            llm: Initialized LangChain LLM
-            
-        Returns:
-            Categorized events structure
-        """
-        if not events or len(events) == 0:
-            logger.info(f"No {event_type} events to categorize")
-            return []
-        
-        # Check categorization cache first
-        categorization_cache = self._load_categorization_cache()
-        cache_key = f"{event_type}_categories"
-        
-        # Create mapping of event hashes for this batch
-        event_hashes = {self._get_event_hash(event): i for i, event in enumerate(events)}
-        
-        # Check if cache exists and all current events are in it
-        if (cache_key in categorization_cache and 
-            all(self._get_event_hash(event) in categorization_cache.get(f"{event_type}_event_map", {}) 
-                for event in events)):
-            
-            logger.info(f"Using cached categorization for {event_type} events")
-            
-            # Get cached categories
-            cached_categories = categorization_cache[cache_key]
-            event_map = categorization_cache[f"{event_type}_event_map"]
-            
-            # Build categories with actual event objects
-            categorized_events = []
-            for category in cached_categories:
-                category_name = category["category_name"]
-                category_obj = {
-                    "category_name": category_name,
-                    "description": "",  # Will be filled later
-                    "events": []
-                }
-                
-                # Add events to category
-                for event_hash, cat_name in event_map.items():
-                    if cat_name == category_name and event_hash in event_hashes:
-                        event_idx = event_hashes[event_hash]
-                        category_obj["events"].append(events[event_idx])
-                
-                # Only add category if it has events
-                if category_obj["events"]:
-                    categorized_events.append(category_obj)
-            
-            logger.info(f"Loaded {len(categorized_events)} categories from cache")
-            for category in categorized_events:
-                logger.info(f"  - {category['category_name']}: {len(category['events'])} events")
-            
-            return categorized_events
-        
-        logger.info(f"Categorizing {event_type} events with LLM...")
-        
-        # Format events for the prompt
-        formatted_events = []
-        for i, event in enumerate(events):
-            # Extract relevant fields for categorization
-            name = event.get("event_name", "")
-            description = event.get("event_description", "")
-            date = event.get("event_date", "")
-            
-            # Truncate description if too long
-            if description and len(description) > 200:
-                description = description[:200] + "..."
-                
-            formatted_events.append(f"Event {i}:\nName: {name}\nDate: {date}\nDescription: {description}\n")
-        
-        # Join formatted events into a string
-        events_text = "\n".join(formatted_events)
-        
-        # Create prompt for deterministic categorization
-        template = """
-        You are an expert academic event organizer with years of experience. I need you to categorize university events into logical series or groups.
-
-        CATEGORIZATION RULES:
-        1. Events that are clearly part of the same series should be grouped together
-        2. When titles follow patterns like "Series Name: Session X" or "Series Name (Part X)", group by the base series name
-        3. For events with dates in titles like "Series (May 2025)", group by the base name without the date
-        4. The goal is to create intuitive groupings that would make sense in a newsletter
-        5. Create between 1-5 categories total, with clear names that describe the event type
-        6. Every event must be assigned to exactly one category
-
-        EXAMPLES:
-        - "Workshop Series: Introduction" and "Workshop Series: Advanced Topics" -> both in "Workshop Series"
-        - "ELP Practice Group For Instructors May 2025 (Session 1)" and "ELP Practice Group For Instructors May 2025 (Session 2)" -> both in "ELP Practice Group For Instructors"
-        - Standalone events that don't fit elsewhere can go in "Additional Events"
-
-        Here are the events to categorize:
-
-        {events_text}
-
-        Provide your categorization as a JSON object with the following format:
-        1. A "categories" array containing objects with "category_name" and "description" (leave description blank)
-        2. An "event_assignments" object mapping event indices to category names
-
-        Example response format:
-        {{
-          "categories": [
-            {{
-              "category_name": "Workshop Series",
-              "description": ""
-            }},
-            {{
-              "category_name": "Faculty Training",
-              "description": ""
-            }}
-          ],
-          "event_assignments": {{
-            "0": "Workshop Series",
-            "1": "Workshop Series",
-            "2": "Faculty Training",
-            "3": "Faculty Training"
-          }}
-        }}
-
-        Be sure every event (0 to {max_index}) is assigned to a category.
-        Only output the JSON object, nothing else.
-        """
-        
-        # Create and format prompt
-        prompt = ChatPromptTemplate.from_template(template)
-        formatted_prompt = prompt.format(
-            events_text=events_text,
-            max_index=len(events) - 1
-        )
-        
-        # Get response from LLM
-        try:
-            response = llm.invoke(formatted_prompt)
-            response_content = response.content.strip()
-            
-            # Extract JSON if wrapped in markdown code blocks
-            if "```json" in response_content:
-                response_content = response_content.split("```json")[1].split("```")[0].strip()
-            elif "```" in response_content:
-                response_content = response_content.split("```")[1].split("```")[0].strip()
-                
-            # Parse JSON
-            categorization = json.loads(response_content)
-            
-            # Get categories and event assignments
-            categories = categorization.get("categories", [])
-            event_assignments = categorization.get("event_assignments", {})
-            
-            # Create categorized events
-            categorized_events = []
-            category_map = {cat["category_name"]: {"category_name": cat["category_name"], "description": "", "events": []} 
-                             for cat in categories}
-            
-            # Assign events to categories
-            for event_idx, category_name in event_assignments.items():
-                event_idx = int(event_idx)
-                if 0 <= event_idx < len(events) and category_name in category_map:
-                    category_map[category_name]["events"].append(events[event_idx])
-            
-            # Convert to list and filter empty categories
-            categorized_events = [cat for cat in category_map.values() if cat["events"]]
-            
-            # Update cache
-            event_map = {}
-            for event_idx, category_name in event_assignments.items():
-                event_idx = int(event_idx)
-                if 0 <= event_idx < len(events):
-                    event_hash = self._get_event_hash(events[event_idx])
-                    event_map[event_hash] = category_name
-            
-            categorization_cache[cache_key] = categories
-            categorization_cache[f"{event_type}_event_map"] = event_map
-            self._save_categorization_cache(categorization_cache)
-            
-            # Sort categories by number of events (descending)
-            categorized_events.sort(key=lambda x: len(x["events"]), reverse=True)
-            
-            logger.info(f"Created {len(categorized_events)} categories for {event_type} events")
-            for category in categorized_events:
-                logger.info(f"  - {category['category_name']}: {len(category['events'])} events")
-            
-            return categorized_events
-        
-        except Exception as e:
-            logger.error(f"Error in LLM categorization: {e}")
-            logger.info("Falling back to basic categorization")
-            
-            # Simple fallback categorization
-            category_obj = {
-                "category_name": f"{event_type} Events",
-                "description": "",
-                "events": events.copy()
-            }
-            
-            return [category_obj]
     
     def _generate_description_with_llm(self, category_name: str, events: List[Dict[str, Any]], llm: ChatOpenAI) -> str:
         """

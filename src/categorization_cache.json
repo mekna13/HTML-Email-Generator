@@ -1,50 +1,70 @@
 {
-  "CTE_categories": [
-    {
-      "category_name": "GMA Series",
-      "description": ""
-    },
-    {
-      "category_name": "Digital Accessibility Series",
-      "description": ""
-    },
-    {
-      "category_name": "Educational Tools Workshop",
-      "description": ""
-    },
-    {
-      "category_name": "Additional Events",
-      "description": ""
-    }
-  ],
-  "CTE_event_map": {
-    "GMA | Maintaining Effective Communication | Thursday, June 5, 10:00am - 12:00pm | Virtual|Thursday, June 5, 2025": "GMA Series",
-    "Proctoring Your Exams Using Respondus Lock Down Browser|Monday, June 9, 2025": "Educational Tools Workshop",
-    "GMA | Aligning Expectations | Monday, June 9, 11:30am-1:00 Pm | Virtual|Monday, June 9, 2025": "GMA Series",
-    "Digital Accessibility: An Overview|Wednesday, June 11, 2025": "Digital Accessibility Series",
-    "Digital Accessibility Series \u2013 Session 1: What Is Digital Accessibility?|Wednesday, June 11, 2025": "Digital Accessibility Series",
-    "GMA | Promoting Professional Development | Wednesday, June 11, 1:00 Pm-2:30 Pm | Virtual|Wednesday, June 11, 2025": "GMA Series",
-    "Canvas Gradebook Setup|Thursday, June 12, 2025": "Educational Tools Workshop"
+  "CTE": {
+    "GMA Series": [
+      "GMA | Maintaining Effective Communication | Thursday, June 5, 10:00am - 12:00pm | Virtual",
+      "GMA | Aligning Expectations | Monday, June 9, 11:30am-1:00 Pm | Virtual",
+      "GMA | Promoting Professional Development | Wednesday, June 11, 1:00 Pm-2:30 Pm | Virtual",
+      "GMA | Assessing Understanding | Tuesday, June 17, 9:00-10:30 Am | Virtual",
+      "GMA | Fostering Independence | Monday, June 23, 10:00 Am-11:30 Am | Virtual",
+      "GMA | Supporting Well-Being | Wednesday, June 25, 1:00-2:30 Pm | Virtual",
+      "GMA | Promoting Professional Development | Monday, July 7, 10:00-11:30 Am | Virtual",
+      "GMA | Maintaining Effective Communication | Wednesday, July 9, 2:00-4:00 Pm | Virtual",
+      "GMA | Fostering Independence | Tuesday, July 15, 12:00-1:30 Pm | Virtual",
+      "GMA | Aligning Expectations | Thursday, July 17, 9:00-10:30 Am | Virtual"
+    ],
+    "Digital Accessibility Series": [
+      "Digital Accessibility: An Overview",
+      "Digital Accessibility Series \u2013 Session 1: What Is Digital Accessibility?",
+      "Digital Accessibility Series \u2013 Session 2: Creating Accessible Content With Microsoft Word And PowerPoint",
+      "Digital Accessibility Series \u2013 Session 3: Improving Accessibility Of PDF Files"
+    ],
+    "Faculty Training": [
+      "Proctoring Your Exams Using Respondus Lock Down Browser",
+      "Canvas Gradebook Setup"
+    ],
+    "Generative AI Series": [
+      "How GenAI Works And Its Potential Use In Higher Education",
+      "Jump In: A Hands-On Introduction To Generative AI",
+      "Introducing Generative AI In The Classroom"
+    ],
+    "Canvas Training": [
+      "Mastering Canvas Modules: Essential Tips For Streamlined Course Organization",
+      "Canvas Gradebook Setup"
+    ],
+    "Social Learning and Peer Review Strategies": [
+      "Integrating Social Learning And Peer Review Strategies Using Perusall (6/24)"
+    ],
+    "Additional Events": [
+      "Digital Accessibility: An Overview",
+      "Creating Accessible Content With Word And PowerPoint Files",
+      "How GenAI Works And Its Potential Use In Higher Education",
+      "Creating Accessible Content With Word And PowerPoint",
+      "Integrating Social Learning And Peer Review Strategies Using Perusall (6/24)",
+      "Empower And Engage: High-Impact Teaching For Student Success",
+      "Connecting Classrooms And Communities: An Introduction To Community-Engaged Learning"
+    ],
+    "Digital Learning Expo": [
+      "(In-Person) Digital Learning Expo",
+      "(Virtual) Digital Learning Expo"
+    ],
+    "Course Design Series": [
+      "Course Design Series: Session 1 - Crafting Learning Outcomes, The Foundation Of A Course"
+    ]
   },
-  "ELP_categories": [
-    {
-      "category_name": "English Language Proficiency Practice Group For Instructors",
-      "description": ""
-    },
-    {
-      "category_name": "English Language Proficiency Workshops",
-      "description": ""
-    }
-  ],
-  "ELP_event_map": {
-    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 5): Prominent Words And Discourse Cues|Monday, June 2, 2025": "English Language Proficiency Practice Group For Instructors",
-    "Don\u2019T Tense Up About Verb Tenses: Choosing The Right Tense To Communicate Effectively (English Language Proficiency)|Tuesday, June 3, 2025": "English Language Proficiency Workshops",
-    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 6): Asking Questions And Active Learning|Tuesday, June 3, 2025": "English Language Proficiency Practice Group For Instructors",
-    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 7): Answering Questions And Contrastive Stress|Wednesday, June 4, 2025": "English Language Proficiency Practice Group For Instructors",
-    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 8): Linking Words And Leading A Discussion|Thursday, June 5, 2025": "English Language Proficiency Practice Group For Instructors",
-    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 9): Meet Undergraduate Students|Friday, June 6, 2025": "English Language Proficiency Practice Group For Instructors",
-    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 10): Microteaching|Monday, June 9, 2025": "English Language Proficiency Practice Group For Instructors",
-    "Suggestion Or Requirement? Use The Right Modal Verb To Give Clear Instructions (English Language Proficiency)|Tuesday, June 10, 2025": "English Language Proficiency Workshops",
-    "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 10): Microteaching|Tuesday, June 10, 2025": "English Language Proficiency Practice Group For Instructors"
+  "ELP": {
+    "English Language Proficiency Practice Group For Instructors": [
+      "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 8): Linking Words And Leading A Discussion",
+      "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 9): Meet Undergraduate Students",
+      "English Language Proficiency Practice Group For Instructors Summer 2025 (Session 10): Microteaching",
+      "ELPE Oral Skills Overview",
+      "English Language Proficiency Exam (ELPE) Presentation Practice (Microteaching With GTCs)"
+    ],
+    "English Language Proficiency Workshops": [
+      "Suggestion Or Requirement? Use The Right Modal Verb To Give Clear Instructions (English Language Proficiency)",
+      "Questioning Clarity: Strategies For Effective Question Formation In Communication (English Language Proficiency)"
+    ],
+    "Additional Events": [
+      "Live Workshop In The Virtual Language Lab For English Proficiency"
+    ]
   }
 }

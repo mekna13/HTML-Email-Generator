@@ -158,7 +158,7 @@ class NewsletterGenerator:
                                     <tr>
                                         <td style="padding:0in 0in 0in 0in">
                                             <p class="MsoNormal" align="center" style="text-align:center">
-                                                <img width="600" height="100" style="width:6.25in;height:1.0416in" src="https://mail.google.com/mail/u/0?ui=2&amp;ik=612bb719ee&amp;attid=0.7&amp;permmsgid=msg-f:1824508954730130781&amp;th=1951f53a48356d5d&amp;view=fimg&amp;fur=ip&amp;permmsgid=msg-f:1824508954730130781&amp;sz=s0-l75-ft&amp;attbid=ANGjdJ-G1dcgArBtOb511i9bAHOEDifQXjZeE9MIGC8iM9EkfAKTkWiX-RFADpzBw22MfSMgsqjR1_LhHu4ICNFtQ4bblSCBqoSkFVna2uzIhZNUqiql-SRUNP9EZso&amp;disp=emb&amp;zw" alt="square texas a and m logo on an off white marble background with words texas a and m university center for teaching excellence">
+                                                <img width="600" height="100" style="width:6.25in;height:1.0416in" src="https://cte.tamu.edu/getmedia/34eb76b6-4b5f-4834-a7a0-257b97fd7231/CTE_Email_Header.jpg" alt="square texas a and m logo on an off white marble background with words texas a and m university center for teaching excellence">
                                             </p>
                                         </td>
                                     </tr>
@@ -219,7 +219,7 @@ class NewsletterGenerator:
                                     <tr>
                                         <td style="padding:0in 0in 0in 0in">
                                             <p class="MsoNormal" align="center" style="text-align:center">
-                                                <img border="0" width="600" height="191" style="width:6.25in;height:1.9895in" src="https://mail.google.com/mail/u/0?ui=2&amp;ik=612bb719ee&amp;attid=0.5&amp;permmsgid=msg-f:1824508954730130781&amp;th=1951f53a48356d5d&amp;view=fimg&amp;fur=ip&amp;permmsgid=msg-f:1824508954730130781&amp;sz=s0-l75-ft&amp;attbid=ANGjdJ_Txvoygmr-RLadzYzqS0eCWVegefXS1_KdjNlRfNELgh95QwjYY0RJUeKJ2RqOfphfvK1uV4cgqVWKRdQuuyeEyTRCvTTVswf_gt7AHcso7RWpiuXkDpC76Dk&amp;disp=emb&amp;zw" alt="image of two students studying outdoors with English language proficiency workshops superimposed in a maroon bar">
+                                                <img border="0" width="600" height="191" style="width:6.25in;height:1.9895in" src="https://cte.tamu.edu/getmedia/d05bda8d-4017-47a3-9d07-26a966d9da55/ELP_Title_Banner.png" alt="image of two students studying outdoors with English language proficiency workshops superimposed in a maroon bar">
                                             </p>
                                         </td>
                                     </tr>
@@ -278,17 +278,17 @@ class NewsletterGenerator:
                                         <tr>
                                             <td width="75" style="width:56.25pt;padding:0in 0in 0in 0in">
                                                 <p class="MsoNormal" align="center" style="text-align:center">
-                                                    <a href="https://ecomms.marcomm.tamu.edu/trk/click?ref=z177i6rteh_0-114_0x38e3x0314" target="_blank"><span style="text-decoration:none"><img border="0" width="40" height="40" style="width:.4166in;height:.4166in" src="https://mail.google.com/mail/u/0?ui=2&amp;ik=612bb719ee&amp;attid=0.13&amp;permmsgid=msg-f:1824508954730130781&amp;th=1951f53a48356d5d&amp;view=fimg&amp;fur=ip&amp;permmsgid=msg-f:1824508954730130781&amp;sz=s0-l75-ft&amp;attbid=ANGjdJ_s0rgiJeLwnyaRRC4CXu0ovfZXjGEzTjUc5J4TQ9t6OVp30XuGX3cXiPxxz9KuDWOZRO5NW71ZMANDMJ3imgimwUPh7oOxS2gy3Kx-XhwwTSntq4Sq8xQyYcY&amp;disp=emb&amp;zw"></span></a><u></u><u></u>
+                                                    <a href="https://ecomms.marcomm.tamu.edu/trk/click?ref=z177i6rteh_0-114_0x38e3x0314" target="_blank"><span style="text-decoration:none"><img border="0" width="40" height="40" style="width:.4166in;height:.4166in" src="https://cte.tamu.edu/getmedia/c3e2b389-a15c-4e80-afd5-f62aa551bf91/icons8-linkedin-100.png" alt="LinkedIn Icon"></span></a><u></u><u></u>
                                                 </p>
                                             </td>
                                             <td width="75" style="width:56.25pt;padding:0in 0in 0in 0in">
                                                 <p class="MsoNormal" align="center" style="text-align:center">
-                                                    <a href="https://ecomms.marcomm.tamu.edu/trk/click?ref=z177i6rteh_0-114_0x38e4x0314" target="_blank"><span style="text-decoration:none"><img border="0" width="40" height="40" style="width:.4166in;height:.4166in" src="https://mail.google.com/mail/u/0?ui=2&amp;ik=612bb719ee&amp;attid=0.3&amp;permmsgid=msg-f:1824508954730130781&amp;th=1951f53a48356d5d&amp;view=fimg&amp;fur=ip&amp;permmsgid=msg-f:1824508954730130781&amp;sz=s0-l75-ft&amp;attbid=ANGjdJ9z9grEwlHVlbh3t3nKs_qewPUo7aXyNwMxzUP4KXUFHhx9J8FNY1m7lKvo4tJ2Ot4JARprZW7Pb32EDDhpf2lz2XYNO2DA_cp5ZLTQQ8pEDqScoSKRTFC8Q94&amp;disp=emb&amp;zw" alt="Email Icon"></span></a><u></u><u></u>
+                                                    <a href="https://ecomms.marcomm.tamu.edu/trk/click?ref=z177i6rteh_0-114_0x38e4x0314" target="_blank"><span style="text-decoration:none"><img border="0" width="40" height="40" style="width:.4166in;height:.4166in" src="https://cte.tamu.edu/getmedia/d92c50e1-0eb6-4f91-9e82-d8ef635cdc80/icons8-email-100.png" alt="Email Icon"></span></a><u></u><u></u>
                                                 </p>
                                             </td>
                                             <td width="75" style="width:56.25pt;padding:0in 0in 0in 0in">
                                                 <p class="MsoNormal" align="center" style="text-align:center">
-                                                    <a href="https://ecomms.marcomm.tamu.edu/trk/click?ref=z177i6rteh_0-114_0x38e5x0314" target="_blank"><span style="text-decoration:none"><img border="0" width="40" height="40" style="width:.4166in;height:.4166in" src="https://mail.google.com/mail/u/0?ui=2&amp;ik=612bb719ee&amp;attid=0.11&amp;permmsgid=msg-f:1824508954730130781&amp;th=1951f53a48356d5d&amp;view=fimg&amp;fur=ip&amp;permmsgid=msg-f:1824508954730130781&amp;sz=s0-l75-ft&amp;attbid=ANGjdJ_-LPekFNswb7_3C4FS-GB0fttYlt8A4-obh1RJ--EfOLhjJJQkxpj21TjiDhHEzbU7I11I_CzJdBGzETxflc6R_zu4j7MRxsTWx4McMNBvEoCKFezHIq2kzq0&amp;disp=emb&amp;zw"></span></a><u></u><u></u>
+                                                    <a href="https://ecomms.marcomm.tamu.edu/trk/click?ref=z177i6rteh_0-114_0x38e5x0314" target="_blank"><span style="text-decoration:none"><img border="0" width="40" height="40" style="width:.4166in;height:.4166in" src="https://cte.tamu.edu/getmedia/1af1f691-e15d-409f-886c-84d67e2d2e6b/294712_circle_youtube_icon.png" alt="Youtube Icon"></span></a><u></u><u></u>
                                                 </p>
                                             </td>
                                         </tr>
@@ -377,7 +377,8 @@ class NewsletterGenerator:
         """
     
     def _event_template(self, event: Dict[str, Any]) -> str:
-        """Generate HTML for an individual event"""
+        """Generate HTML for an individual event with HTML calendar icon"""
+        
         # Extract event details
         event_name = event.get('event_name', '')
         event_link = event.get('event_link', '')
@@ -391,38 +392,104 @@ class NewsletterGenerator:
         # Convert event title to uppercase
         event_name_uppercase = event_name.upper()
         
-        # Generate a short calendar icon string based on the date
-        calendar_icon_alt = event_date.split(',')[0].strip() if ',' in event_date else event_date
+        # Parse date to extract day and month for calendar icon
+        calendar_day, calendar_month = self._parse_date_for_calendar(event_date)
         
         # Use full event name for links (no shortening)
         event_name_for_links = event_name
         
         return f"""
-                            <div align="center">
-                                <table border="0" cellspacing="0" cellpadding="0" width="600" style="width:6.25in;color:inherit;font-size:inherit">
-                                    <tbody>
+            <div align="center">
+                <table border="0" cellspacing="0" cellpadding="0" width="600" style="width:6.25in;color:inherit;font-size:inherit">
+                    <tbody>
+                        <tr>
+                            <td width="45" valign="top" style="width:33.75pt;padding:3.75pt 3.75pt 0in 0in">
+                                <p class="MsoNormal" align="center" style="text-align:center">
+                                    <table border="0" cellspacing="0" cellpadding="0" style="width:41px;height:43px;background-color:#500000;">
                                         <tr>
-                                            <td width="45" valign="top" style="width:33.75pt;padding:3.75pt 3.75pt 0in 0in">
-                                                <p class="MsoNormal" align="center" style="text-align:center">
-                                                    <img border="0" width="41" height="43" style="width:.427in;height:.4479in" src="https://mail.google.com/mail/u/0?ui=2&amp;ik=612bb719ee&amp;attid=0.15&amp;permmsgid=msg-f:1824508954730130781&amp;th=1951f53a48356d5d&amp;view=fimg&amp;fur=ip&amp;permmsgid=msg-f:1824508954730130781&amp;sz=s0-l75-ft&amp;attbid=ANGjdJ9YQnX5549G3FvZaV0ZWIqPntjrIaEqt7xwfQhlLkMQ9gBFaRsc_-3RZZ3pwfaUtSL-9kLEb1YuhYqxt7a9t2-8IwaRoIh7SQV0fbaJg5I1T-3o_DUK926M--Y&amp;disp=emb&amp;zw" alt="calendar representation of {calendar_icon_alt}"><u></u><u></u>
-                                                </p>
-                                            </td>
-                                            <td valign="top" style="padding:0in 0in 11.25pt 0in">
-                                                <p class="MsoNormal">
-                                                    <b><a href="{event_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{event_name_uppercase}</span></a></b><br>
-                                                    <span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">{event_date}, {event_location}<br>
-                                                    Time: {event_time}<br>
-                                                    <b>Facilitators</b>: {event_facilitators}<br>
-                                                    <b>Description</b>: {event_description}</span><br>
-                                                    <b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif"><a href="{event_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Read more about the {event_name_for_links} event here</span></a></span></b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">.<br>
-                                                    <b><a href="{event_registration_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Register for the {event_name_for_links} event here</span></a></b>.</span><u></u><u></u>
-                                                </p>
+                                            <td style="text-align:center;vertical-align:middle;font-family:'Open Sans',Arial,sans-serif;color:white;padding:0;line-height:1;">
+                                                <div style="font-size:16px;font-weight:bold;">{calendar_day}</div>
+                                                <div style="font-size:8px;font-weight:bold;margin-top:2px;">{calendar_month}</div>
                                             </td>
                                         </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                    </table>
+                                    <u></u><u></u>
+                                </p>
+                            </td>
+                            <td valign="top" style="padding:0in 0in 11.25pt 0in">
+                                <p class="MsoNormal">
+                                    <b><a href="{event_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{event_name_uppercase}</span></a></b><br>
+                                    <span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">{event_date}, {event_location}<br>
+                                    Time: {event_time}<br>
+                                    <b>Facilitators</b>: {event_facilitators}<br>
+                                    <b>Description</b>: {event_description}</span><br>
+                                    <b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif"><a href="{event_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Read more about the {event_name_for_links} event here</span></a></span></b><span style="font-size:9.0pt;font-family:&quot;Open Sans&quot;,sans-serif">.<br>
+                                    <b><a href="{event_registration_link}" style="text-decoration:underline;color:#500000" target="_blank"><span style="font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">Register for the {event_name_for_links} event here</span></a></b>.</span><u></u><u></u>
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         """
+
+    def _parse_date_for_calendar(self, event_date: str) -> tuple:
+        """Parse event date string to extract day and month for calendar display"""
+        
+        import re
+        from datetime import datetime
+        
+        try:
+            # Handle different date formats
+            # Example: "Monday, June 9, 2025" or "June 9, 2025"
+            
+            # Extract the date part (remove day name if present)
+            date_part = event_date
+            if ',' in event_date:
+                parts = event_date.split(',')
+                if len(parts) >= 2:
+                    # If format is "Monday, June 9, 2025", take "June 9, 2025"
+                    date_part = ','.join(parts[1:]).strip()
+                
+            # Try to parse common date formats
+            date_formats = [
+                "%B %d, %Y",  # "June 9, 2025"
+                "%b %d, %Y",  # "Jun 9, 2025"
+                "%m/%d/%Y",   # "6/9/2025"
+                "%Y-%m-%d",   # "2025-06-09"
+            ]
+            
+            parsed_date = None
+            for fmt in date_formats:
+                try:
+                    parsed_date = datetime.strptime(date_part, fmt)
+                    break
+                except ValueError:
+                    continue
+            
+            if parsed_date:
+                day = str(parsed_date.day)
+                month = parsed_date.strftime("%b").upper()[:3]  # Get 3-letter month abbreviation, ensure max 3 chars
+                return day, month
+            
+            # Fallback: try to extract with regex
+            # Look for day number and month name
+            day_match = re.search(r'\b(\d{1,2})\b', date_part)
+            month_match = re.search(r'\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b', date_part, re.IGNORECASE)
+            
+            if day_match and month_match:
+                day = day_match.group(1)
+                month = month_match.group(1)[:3].upper()  # First 3 letters only, uppercase
+                return day, month
+                
+        except Exception as e:
+            # Log the error but don't break the template
+            import logging
+            logger = logging.getLogger("tamu_newsletter")
+            logger.warning(f"Error parsing date '{event_date}': {e}")
+        
+        # Fallback to generic calendar icon
+        return "?", "???"
     
     def _separator_template(self) -> str:
         """Generate HTML for category separator"""
