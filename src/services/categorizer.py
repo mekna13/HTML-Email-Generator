@@ -354,7 +354,7 @@ class EventCategorizer:
         
         # Create prompt for categorization with historical context
         template = """
-            You are an expert academic event organizer with years of experience. I need you to categorize university events into logical series or groups.
+            You are an expert academic event organizer with years of experience. I need you to categorize university events into logical series, groups or standalone events.
 
             HISTORICAL CONTEXT - Previous Event Categories:
             {history_text}
@@ -506,6 +506,10 @@ class EventCategorizer:
         try:
             response = llm.invoke(formatted_prompt)
             shortened_description = response.content.strip()
+            
+            # Clean up the response to remove quotes and unwanted formatting
+            shortened_description = self._clean_llm_response(shortened_description)
+            
             time_module.sleep(0.5)  # Rate limiting with explicit module reference
             return shortened_description
         except Exception as e:
@@ -700,6 +704,10 @@ class EventCategorizer:
         try:
             response = llm.invoke(formatted_prompt)
             description = response.content.strip()
+            
+            # Clean up the response to remove quotes and unwanted formatting
+            description = self._clean_llm_response(description)
+            
             time_module.sleep(1)  # Rate limiting with explicit module reference
             return description
         except Exception as e:
@@ -772,6 +780,10 @@ class EventCategorizer:
         try:
             response = llm.invoke(formatted_prompt)
             weekly_info = response.content.strip()
+            
+            # Clean up the response to remove quotes and unwanted formatting
+            weekly_info = self._clean_llm_response(weekly_info)
+            
             time_module.sleep(1)  # Rate limiting with explicit module reference
             return weekly_info
         except Exception as e:
@@ -900,6 +912,9 @@ class EventCategorizer:
             response = llm.invoke(formatted_prompt)
             description = response.content.strip()
             
+            # Clean up the response to remove quotes and unwanted formatting
+            
+            description = self._clean_llm_response(description)
             # Add some delay to avoid rate limits
             time.sleep(1)
             
@@ -907,3 +922,49 @@ class EventCategorizer:
         except Exception as e:
             logger.error(f"Error generating description: {e}")
             return f"A series of events focused on {category_name}."
+        
+    def _clean_llm_response(self, response_text: str) -> str:
+        """
+        Clean up LLM response text by removing unwanted quotes and formatting
+        
+        Args:
+            response_text: Raw response from LLM
+            
+        Returns:
+            Cleaned response text
+        """
+        if not response_text:
+            return response_text
+        
+        # Strip whitespace
+        cleaned = response_text.strip()
+        
+        # Remove outer quotes if the entire response is wrapped in quotes
+        if len(cleaned) >= 2:
+            # Check for double quotes
+            if cleaned.startswith('"') and cleaned.endswith('"'):
+                cleaned = cleaned[1:-1]
+            # Check for single quotes
+            elif cleaned.startswith("'") and cleaned.endswith("'"):
+                cleaned = cleaned[1:-1]
+        
+        # Remove common prefixes that LLMs sometimes add
+        prefixes_to_remove = [
+            "Description: ",
+            "Here's the description: ",
+            "Here is the description: ",
+            "The description is: ",
+            "Weekly Event Info: ",
+            "Here's the weekly event info: ",
+            "Shortened Description: "
+        ]
+        
+        for prefix in prefixes_to_remove:
+            if cleaned.startswith(prefix):
+                cleaned = cleaned[len(prefix):]
+                break
+        
+        # Final cleanup
+        cleaned = cleaned.strip()
+        
+        return cleaned

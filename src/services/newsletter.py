@@ -401,16 +401,31 @@ class NewsletterGenerator:
         # Build the description section conditionally
         description_parts = []
         
-        # Always include date, location, and time
+        # Always include date and location
         description_parts.append(f"{event_date}, {event_location}<br>")
-        description_parts.append(f"Time: {event_time}<br>")
         
-        # Conditionally add facilitators if they exist and are not empty
-        if event_facilitators and event_facilitators.strip():
-            description_parts.append(f"<b>Facilitators</b>: {event_facilitators}<br>")
+        # Check if we have facilitators or description to determine if we need <br> after time
+        has_facilitators = event_facilitators and event_facilitators.strip()
+        has_description = event_description and event_description.strip()
+        has_additional_content = has_facilitators or has_description
         
-        # Conditionally add description if it exists and is not empty
-        if event_description and event_description.strip():
+        # Add time with conditional <br>
+        if has_additional_content:
+            description_parts.append(f"Time: {event_time}<br>")  # Add <br> if more content follows
+        else:
+            description_parts.append(f"Time: {event_time}")      # No <br> if this is the last item
+        
+        # Conditionally add facilitators if they exist
+        if has_facilitators:
+            if has_description:
+                # Add <br> after facilitators if description follows
+                description_parts.append(f"<b>Facilitators</b>: {event_facilitators}<br>")
+            else:
+                # No <br> after facilitators if it's the last item
+                description_parts.append(f"<b>Facilitators</b>: {event_facilitators}")
+        
+        # Conditionally add description if it exists (never needs <br> as it's always last)
+        if has_description:
             description_parts.append(f"<b>Description</b>: {event_description}")
         
         # Join all parts together
@@ -447,7 +462,6 @@ class NewsletterGenerator:
                 </table>
             </div>
         """
-
     def _parse_date_for_calendar(self, event_date: str) -> tuple:
         """Parse event date string to extract day and month for calendar display"""
         
