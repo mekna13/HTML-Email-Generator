@@ -127,158 +127,235 @@ class EventScraper:
 
         # Update this section in your _scrape_events_from_url method
 
+   # Update your _scrape_events_from_url method with better error handling
+
     def _scrape_events_from_url(self, url: str, start_date: date, end_date: date) -> List[Dict[str, Any]]:
         """Scrape events from a specified URL within the date range"""
         
-        # Set up Chrome options for Debian/cloud deployment
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--window-size=1920,1080")
-        chrome_options.add_argument("--remote-debugging-port=9222")
-        chrome_options.add_argument("--disable-web-security")
-        chrome_options.add_argument("--allow-running-insecure-content")
-        chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument("--disable-plugins")
-        chrome_options.add_argument("--disable-images")
-        chrome_options.add_argument("--disable-logging")
-        chrome_options.add_argument("--log-level=3")
-        
-        driver = None
-        
-        # Try Debian-compatible Chrome/Chromium paths
-        chrome_paths = [
-            "/usr/bin/chromium",           # Primary Debian path
-            "/usr/bin/chromium-browser",   # Fallback
-            "/usr/bin/google-chrome",      
-            "/usr/bin/google-chrome-stable"
-        ]
-        
-        for chrome_path in chrome_paths:
-            try:
-                import os
-                if os.path.exists(chrome_path):
-                    logger.info(f"Found Chrome at: {chrome_path}")
-                    chrome_options.binary_location = chrome_path
-                    
-                    # Try with system chromedriver first
-                    chromedriver_paths = [
-                        "/usr/bin/chromedriver",       # Standard path
-                        "/usr/bin/chromium-driver",    # Debian package name
-                        "/usr/lib/chromium/chromedriver"  # Alternative path
-                    ]
-                    
-                    for driver_path in chromedriver_paths:
-                        if os.path.exists(driver_path):
-                            logger.info(f"Using system chromedriver: {driver_path}")
-                            service = Service(driver_path)
-                            driver = webdriver.Chrome(service=service, options=chrome_options)
-                            break
-                    
-                    if driver:
-                        break
-                        
-                    # Fallback to webdriver-manager if system driver not found
-                    try:
-                        logger.info("Trying webdriver-manager...")
-                        driver = webdriver.Chrome(
-                            service=Service(ChromeDriverManager().install()),
-                            options=chrome_options
-                        )
-                        break
-                    except Exception as e:
-                        logger.warning(f"WebDriver manager failed with {chrome_path}: {e}")
-                        continue
-                        
-            except Exception as e:
-                logger.warning(f"Failed to use Chrome at {chrome_path}: {e}")
-                continue
-        
-        if not driver:
-            error_msg = "Failed to initialize Chrome driver with any available method"
-            logger.error(error_msg)
-            raise Exception(error_msg)
-        
-        # Rest of your existing scraping logic...
+        # ... existing Chrome setup code ...
         try:
             logger.info(f"Successfully initialized Chrome driver, loading: {url}")
-            # ... existing code for scraping
+            
+            # Load the page
+            driver.get(url)
+            logger.info("Page loaded successfully")
+            
+            # Wait for events to load with better error handling
+            try:
+                WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "lw_cal_event"))
+                )
+                logger.info("Events container found")
+            except TimeoutException:
+                logger.warning("Timeout waiting for events to load")
+                # Check if page loaded at all
+                page_title = driver.title
+                logger.info(f"Page title: {page_title}")
+                # Return empty list instead of failing
+                return []
+            
+            # Add a small delay
+            time.sleep(2)
+            
+            # Find event elements with error checking
+            event_elements = driver.find_elements(By.CLASS_NAME, "lw_cal_event")
+            
+            # DEBUG: Check if event_elements is None
+            if event_elements is None:
+                logger.error("event_elements is None - this shouldn't happen with Selenium")
+                return []
+            
+            logger.info(f"Found {len(event_elements)} event elements")
+            
+            # If no events found, check page content
+            if len(event_elements) == 0:
+                logger.warning("No events found on page")
+                # Debug: check page source
+                page_source = driver.page_source
+                logger.info(f"Page source length: {len(page_source) if page_source else 'None'}")
+                if page_source and "lw_cal_event" in page_source:
+                    logger.warning("Events exist in source but not found by selector")
+                return []
+            
+            # Process events with better error handling
+            event_data = []
+            
+            for i, element in enumerate(event_elements):
+                try:
+                    logger.info(f"Processing event {i+1}/{len(event_elements)}")
+                    
+                    # Extract event details with None checks
+                    title_elements = element.find_elements(By.CSS_SELECTOR, "h4 a")
+                    if not title_elements:
+                        logger.warning(f"No title found for event {i+1}")
+                        continue
+                    
+                    title_element = title_elements[0]
+                    event_name = title_element.text
+                    event_link = title_element.get_attribute("href")
+                    
+                    if not event_name:
+                        logger.warning(f"Empty event name for event {i+1}")
+                        continue
+                    
+                    # Get date/time with None check
+                    date_time_elements = element.find_elements(By.CLASS_NAME, "date-time")
+                    if date_time_elements:
+                        date_time = date_time_elements[0].text
+                        if date_time:  # Check if not None/empty
+                            event_date = date_time.split("·")[0].strip() if "·" in date_time else date_time
+                            event_time = date_time.split("·")[1].strip() if "·" in date_time else ""
+                        else:
+                            logger.warning(f"Empty date_time for event: {event_name}")
+                            event_date = ""
+                            event_time = ""
+                    else:
+                        logger.warning(f"No date-time element for event: {event_name}")
+                        event_date = ""
+                        event_time = ""
+                    
+                    # Check if event is within date range
+                    if event_date and not self._is_within_date_range(event_date, start_date, end_date):
+                        logger.info(f"Event outside date range: {event_name}")
+                        continue
+                    
+                    # Get location with None check
+                    location_elements = element.find_elements(By.CLASS_NAME, "map-marker")
+                    location = location_elements[0].text if location_elements and location_elements[0].text else ""
+                    
+                    # Create event object
+                    event = {
+                        "event_name": event_name,
+                        "event_link": event_link or "",
+                        "event_date": event_date,
+                        "event_time": event_time,
+                        "event_location": location,
+                        "event_facilitators": "",
+                        "event_registration_link": "",
+                        "event_description": ""
+                    }
+                    
+                    event_data.append(event)
+                    logger.info(f"Successfully processed: {event_name}")
+                    
+                except (StaleElementReferenceException, NoSuchElementException) as e:
+                    logger.warning(f"Element error for event {i+1}: {str(e)}")
+                    continue
+                except Exception as e:
+                    logger.error(f"Unexpected error processing event {i+1}: {str(e)}")
+                    continue
+            
+            logger.info(f"Successfully processed {len(event_data)} events")
+            
+            # Get additional details for each event
+            for i, event in enumerate(event_data):
+                try:
+                    logger.info(f"Getting details for event {i+1}/{len(event_data)}: {event['event_name']}")
+                    event = self._get_event_details(driver, event)
+                except Exception as e:
+                    logger.warning(f"Error getting details for {event['event_name']}: {str(e)}")
+                    # Continue with basic event data
+            
+            return event_data
+            
+        except Exception as e:
+            logger.error(f"Error in _scrape_events_from_url: {str(e)}")
+            raise Exception(f"Failed to scrape events: {str(e)}")
+            
         finally:
+            # Always close the driver
             if driver:
                 driver.quit()
+         
+            
+    # Update your _get_event_details method with better error handling
+
     def _get_event_details(self, driver, event: Dict[str, Any]) -> Dict[str, Any]:
         """Visit the event detail page and extract additional information"""
         try:
             # Navigate to the event detail page
-            driver.get(event["event_link"])
+            event_link = event.get("event_link", "")
+            if not event_link:
+                logger.warning("No event link provided")
+                return event
+                
+            logger.info(f"Navigating to: {event_link}")
+            driver.get(event_link)
             
             # Wait for the page to load
             WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.TAG_NAME, "body"))
             )
             
-            # Optional: Add a small delay
+            # Add a small delay
             time.sleep(1)
             
             # Get registration link if available
             try:
-                reg_element = driver.find_element(By.CLASS_NAME, "lw_join_online")
-                event["event_registration_link"] = reg_element.get_attribute("href")
-            except (NoSuchElementException, StaleElementReferenceException):
-                # No registration link found
-                pass
+                reg_elements = driver.find_elements(By.CLASS_NAME, "lw_join_online")
+                if reg_elements:
+                    reg_element = reg_elements[0]
+                    reg_link = reg_element.get_attribute("href")
+                    if reg_link:
+                        event["event_registration_link"] = reg_link
+            except Exception as e:
+                logger.warning(f"Error getting registration link: {e}")
             
             # Method 1: Try to get from the intro div
             try:
-                intro_div = driver.find_element(By.CLASS_NAME, "intro")
-                intro_text = intro_div.text
-                
-                # Parse facilitator
-                facilitator_match = re.search(r'Facilitator[s]?:\s*(.*?)(?:\s*Description:|$)', intro_text, re.DOTALL)
-                if facilitator_match:
-                    event["event_facilitators"] = facilitator_match.group(1).strip()
-                
-                # Parse description (from intro)
-                description_match = re.search(r'Description:\s*(.*?)$', intro_text, re.DOTALL)
-                if description_match:
-                    event["event_description"] = description_match.group(1).strip()
+                intro_elements = driver.find_elements(By.CLASS_NAME, "intro")
+                if intro_elements:
+                    intro_div = intro_elements[0]
+                    intro_text = intro_div.text
                     
-            except (NoSuchElementException, StaleElementReferenceException):
-                # No intro div found
-                pass
-                
-            # Method 2: Try to get description from lw_calendar_event_description
-            if not event["event_description"]:
-                try:
-                    description_div = driver.find_element(By.CLASS_NAME, "lw_calendar_event_description")
-                    event["event_description"] = description_div.text.strip()
-                except (NoSuchElementException, StaleElementReferenceException):
-                    # No description div found
-                    pass
+                    if intro_text:  # Check if not None/empty
+                        # Parse facilitator
+                        facilitator_match = re.search(r'Facilitator[s]?:\s*(.*?)(?:\s*Description:|$)', intro_text, re.DOTALL)
+                        if facilitator_match:
+                            event["event_facilitators"] = facilitator_match.group(1).strip()
+                        
+                        # Parse description (from intro)
+                        description_match = re.search(r'Description:\s*(.*?)$', intro_text, re.DOTALL)
+                        if description_match:
+                            event["event_description"] = description_match.group(1).strip()
+            except Exception as e:
+                logger.warning(f"Error parsing intro div: {e}")
             
-            # Method 3: If facilitator is still empty, try alternative parsing from intro or page content
-            if not event["event_facilitators"]:
+            # Method 2: Try to get description from lw_calendar_event_description
+            if not event.get("event_description"):
                 try:
-                    page_content = driver.find_element(By.TAG_NAME, "body").text
+                    desc_elements = driver.find_elements(By.CLASS_NAME, "lw_calendar_event_description")
+                    if desc_elements:
+                        description_div = desc_elements[0]
+                        desc_text = description_div.text
+                        if desc_text:  # Check if not None/empty
+                            event["event_description"] = desc_text.strip()
+                except Exception as e:
+                    logger.warning(f"Error getting description: {e}")
+            
+            # Method 3: If facilitator is still empty, try alternative parsing
+            if not event.get("event_facilitators"):
+                try:
+                    body_element = driver.find_element(By.TAG_NAME, "body")
+                    page_content = body_element.text if body_element else ""
                     
-                    # Look for typical facilitator patterns
-                    facilitator_patterns = [
-                        r'Facilitator[s]?:\s*(.*?)(?:\n|Description:)',
-                        r'Presenter[s]?:\s*(.*?)(?:\n|Description:)',
-                        r'Instructor[s]?:\s*(.*?)(?:\n|Description:)'
-                    ]
-                    
-                    for pattern in facilitator_patterns:
-                        match = re.search(pattern, page_content, re.DOTALL)
-                        if match:
-                            event["event_facilitators"] = match.group(1).strip()
-                            break
-                except:
-                    pass
+                    if page_content:  # Check if not None/empty
+                        # Look for typical facilitator patterns
+                        facilitator_patterns = [
+                            r'Facilitator[s]?:\s*(.*?)(?:\n|Description:)',
+                            r'Presenter[s]?:\s*(.*?)(?:\n|Description:)',
+                            r'Instructor[s]?:\s*(.*?)(?:\n|Description:)'
+                        ]
+                        
+                        for pattern in facilitator_patterns:
+                            match = re.search(pattern, page_content, re.DOTALL)
+                            if match:
+                                event["event_facilitators"] = match.group(1).strip()
+                                break
+                except Exception as e:
+                    logger.warning(f"Error in alternative facilitator parsing: {e}")
                     
         except Exception as e:
-            logger.warning(f"Error getting details for {event['event_name']}: {str(e)}")
+            logger.warning(f"Error getting details for {event.get('event_name', 'unknown')}: {str(e)}")
         
         return event
