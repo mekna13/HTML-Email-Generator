@@ -139,8 +139,6 @@ class EventScraper:
         chrome_options.add_argument("--disable-features=VizDisplayCompositor")
         chrome_options.add_argument("--disable-extensions")
         chrome_options.add_argument("--disable-plugins")
-        chrome_options.add_argument("--disable-images")  # Speed up loading
-        chrome_options.add_argument("--disable-javascript")  # May help if JS not needed
         chrome_options.add_argument("--window-size=1920,1080")
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
@@ -154,37 +152,43 @@ class EventScraper:
         chrome_options.add_argument("--disable-renderer-backgrounding")
         chrome_options.add_argument("--disable-backgrounding-occluded-windows")
         
-        # Initialize the driver with automatic ChromeDriver installation
+        # Additional options for better compatibility with your packages
+        chrome_options.add_argument("--remote-debugging-port=9222")
+        chrome_options.add_argument("--disable-setuid-sandbox")
+        chrome_options.add_argument("--disable-software-rasterizer")
+        
+        # Initialize the driver
         driver = None
         try:
-            # Try to use system Chrome first (for Streamlit Cloud)
-            try:
-                # Check if chrome/chromium is available in system
-                import shutil
-                chrome_path = shutil.which("google-chrome") or shutil.which("chromium-browser") or shutil.which("chromium")
-                
-                if chrome_path:
-                    logger.info(f"Using system Chrome at: {chrome_path}")
-                    chrome_options.binary_location = chrome_path
-                    
-                # For Streamlit Cloud, try to use the system chromedriver if available
-                chromedriver_path = shutil.which("chromedriver")
-                if chromedriver_path:
-                    logger.info(f"Using system chromedriver at: {chromedriver_path}")
-                    service = Service(chromedriver_path)
-                else:
-                    logger.info("Using ChromeDriverManager to install chromedriver")
-                    service = Service(ChromeDriverManager().install())
-                
-                driver = webdriver.Chrome(service=service, options=chrome_options)
-                
-            except Exception as e:
-                logger.warning(f"Failed to use system Chrome, falling back to ChromeDriverManager: {e}")
-                # Fallback to ChromeDriverManager
-                driver = webdriver.Chrome(
-                    service=Service(ChromeDriverManager().install()),
-                    options=chrome_options
-                )
+            import shutil
+            import os
+            
+            # Set display for xvfb (matches your packages.txt)
+            if 'DISPLAY' not in os.environ:
+                os.environ['DISPLAY'] = ':99'
+                logger.info("Set DISPLAY environment variable for xvfb")
+            
+            # Try to use system Chrome/Chromium first (matching your packages.txt)
+            chrome_path = shutil.which("chromium") or shutil.which("chromium-browser") or shutil.which("google-chrome")
+            chromedriver_path = shutil.which("chromium-driver") or shutil.which("chromedriver")
+            
+            if chrome_path:
+                logger.info(f"Using system Chrome/Chromium at: {chrome_path}")
+                chrome_options.binary_location = chrome_path
+            else:
+                logger.info("No system Chrome found, using default")
+            
+            # Determine which service to use
+            if chromedriver_path:
+                logger.info(f"Using system chromedriver at: {chromedriver_path}")
+                service = Service(chromedriver_path)
+            else:
+                logger.info("System chromedriver not found, using ChromeDriverManager")
+                service = Service(ChromeDriverManager().install())
+            
+            # Initialize the driver
+            logger.info("Initializing Chrome driver...")
+            driver = webdriver.Chrome(service=service, options=chrome_options)
             logger.info(f"Successfully initialized Chrome driver, loading: {url}")
             
             # Load the page
