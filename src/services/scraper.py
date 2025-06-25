@@ -119,21 +119,72 @@ class EventScraper:
             
             # Compare with start and end dates
             return start_date <= event_date_obj.date() <= end_date
-        except:
-            # If there's an error in parsing, include the event to be safe
-            logger.warning(f"Could not parse date '{event_date}', including event anyway")
+        except Exception as e:
+            # If there's an error in parsing, exclude the event to be safe
+            logger.warning(f"Could not parse date '{event_date}': {e}")
             return False
     
-
-        # Update this section in your _scrape_events_from_url method
-
-   # Update your _scrape_events_from_url method with better error handling
-
     def _scrape_events_from_url(self, url: str, start_date: date, end_date: date) -> List[Dict[str, Any]]:
         """Scrape events from a specified URL within the date range"""
         
-        # ... existing Chrome setup code ...
+        # Set up Chrome options for Streamlit Cloud (Linux/Debian environment)
+        chrome_options = Options()
+        
+        # Essential options for headless Chrome in Linux containers
+        chrome_options.add_argument("--headless=new")  # Use new headless mode
+        chrome_options.add_argument("--no-sandbox")  # Critical for containerized environments
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+        chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration
+        chrome_options.add_argument("--disable-web-security")
+        chrome_options.add_argument("--disable-features=VizDisplayCompositor")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-plugins")
+        chrome_options.add_argument("--disable-images")  # Speed up loading
+        chrome_options.add_argument("--disable-javascript")  # May help if JS not needed
+        chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--start-maximized")
+        chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+        chrome_options.add_argument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+        
+        # Memory and process management for limited resources
+        chrome_options.add_argument("--memory-pressure-off")
+        chrome_options.add_argument("--max_old_space_size=4096")
+        chrome_options.add_argument("--single-process")  # Use single process mode
+        chrome_options.add_argument("--disable-background-timer-throttling")
+        chrome_options.add_argument("--disable-renderer-backgrounding")
+        chrome_options.add_argument("--disable-backgrounding-occluded-windows")
+        
+        # Initialize the driver with automatic ChromeDriver installation
+        driver = None
         try:
+            # Try to use system Chrome first (for Streamlit Cloud)
+            try:
+                # Check if chrome/chromium is available in system
+                import shutil
+                chrome_path = shutil.which("google-chrome") or shutil.which("chromium-browser") or shutil.which("chromium")
+                
+                if chrome_path:
+                    logger.info(f"Using system Chrome at: {chrome_path}")
+                    chrome_options.binary_location = chrome_path
+                    
+                # For Streamlit Cloud, try to use the system chromedriver if available
+                chromedriver_path = shutil.which("chromedriver")
+                if chromedriver_path:
+                    logger.info(f"Using system chromedriver at: {chromedriver_path}")
+                    service = Service(chromedriver_path)
+                else:
+                    logger.info("Using ChromeDriverManager to install chromedriver")
+                    service = Service(ChromeDriverManager().install())
+                
+                driver = webdriver.Chrome(service=service, options=chrome_options)
+                
+            except Exception as e:
+                logger.warning(f"Failed to use system Chrome, falling back to ChromeDriverManager: {e}")
+                # Fallback to ChromeDriverManager
+                driver = webdriver.Chrome(
+                    service=Service(ChromeDriverManager().install()),
+                    options=chrome_options
+                )
             logger.info(f"Successfully initialized Chrome driver, loading: {url}")
             
             # Load the page
@@ -251,7 +302,7 @@ class EventScraper:
             for i, event in enumerate(event_data):
                 try:
                     logger.info(f"Getting details for event {i+1}/{len(event_data)}: {event['event_name']}")
-                    event = self._get_event_details(driver, event)
+                    event_data[i] = self._get_event_details(driver, event)
                 except Exception as e:
                     logger.warning(f"Error getting details for {event['event_name']}: {str(e)}")
                     # Continue with basic event data
@@ -265,11 +316,12 @@ class EventScraper:
         finally:
             # Always close the driver
             if driver:
-                driver.quit()
-         
-            
-    # Update your _get_event_details method with better error handling
-
+                try:
+                    driver.quit()
+                    logger.info("Chrome driver closed successfully")
+                except Exception as e:
+                    logger.warning(f"Error closing driver: {e}")
+    
     def _get_event_details(self, driver, event: Dict[str, Any]) -> Dict[str, Any]:
         """Visit the event detail page and extract additional information"""
         try:
