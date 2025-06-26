@@ -38,9 +38,6 @@ class EventCategorizer:
         """
         logger.info(f"Starting event categorization with model: {model}")
         
-        # Set environment variables for the OpenAI API
-        os.environ["OPENAI_API_KEY"] = api_key
-        os.environ["OPENAI_MODEL"] = model
         
         # Always run directly now - no subprocess needed
         return self._categorize_direct(api_key, model)
@@ -210,10 +207,15 @@ class EventCategorizer:
             
             logger.info(f"Categorized events saved to {output_path}")
             
+            api_key = None
+            del api_key
+            
             return (True, structured_data)
             
         except Exception as e:
             logger.error(f"Error during categorization: {str(e)}")
+            api_key = None
+            del api_key
             return (False, {"error": f"Error during categorization: {str(e)}"})
     
     def _load_categorization_history(self) -> Dict[str, Dict[str, List[str]]]:

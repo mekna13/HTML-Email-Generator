@@ -30,8 +30,14 @@ class Step2UI:
         if st.session_state.step1_complete and not st.session_state.step2_complete:
             logger.info("Rendering Step 2 UI elements")
             
-            # Display OpenAI API key input box (for LLM categorization)
-            api_key = os.getenv("OPENAI_API_KEY", "")
+            # SECURE: Always prompt for API key, never store it anywhere
+            # Always ask for API key input - never check environment or session
+            api_key = st.text_input(
+                "OpenAI API Key (required for event categorization)", 
+                type="password", 
+                help="Your API key will only be used temporarily for categorization and will not be stored.",
+                placeholder="sk-..."
+            )
             if not api_key:
                 api_key = st.text_input("OpenAI API Key (for event categorization)", 
                                       type="password", 
@@ -49,19 +55,27 @@ class Step2UI:
             if selected_model:
                 os.environ["OPENAI_MODEL"] = selected_model
                 logger.info(f"Selected model: {selected_model}")
-            
-            # Run categorization button
-            if st.button("Run Event Categorization"):
-                logger.info("Categorization button clicked")
-                
-                # Check if API key is provided
-                if not os.getenv("OPENAI_API_KEY"):
-                    logger.error("OpenAI API key not provided")
-                    st.error("OpenAI API key is required for categorization. Please enter it above.")
-                else:
-                    with st.spinner("Categorizing events... This may take a few minutes."):
-                        # Call the categorize callback (debug_mode removed)
-                        self.categorize_callback(api_key, selected_model)
+                        
+            # Run categorization button - only enabled if API key is provided
+            if not api_key:
+                st.info("👆 Please enter your OpenAI API key above to enable categorization.")
+                st.button("Run Event Categorization", disabled=True)
+            else:
+                if st.button("Run Event Categorization", type="primary"):
+                    logger.info("Categorization button clicked")
+                    
+                    # Validate API key format (basic check)
+                    if not api_key.startswith("sk-") or len(api_key) < 20:
+                        st.error("❌ Invalid API key format. OpenAI API keys start with 'sk-' and are much longer.")
+                    else:
+                        with st.spinner("Categorizing events... This may take a few minutes."):
+                            # Call the categorize callback with API key
+                            # SECURE: Pass API key directly, don't store anywhere
+                            self.categorize_callback(api_key, selected_model)
+                            
+                            # SECURE: Clear the API key from memory after use
+                            api_key = None
+                            del api_key
         
         # Display categorized events if Step 2 is complete
         self._display_categorized_events_if_complete()

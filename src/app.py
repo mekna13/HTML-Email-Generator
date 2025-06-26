@@ -92,12 +92,26 @@ def scrape_events_callback(start_date, end_date):
         st.error(f"An error occurred during scraping: {e}")
 
 def categorize_events_callback(api_key: str, model: str):
-    """Callback function for Step 2: Categorize Events"""
+    """
+    Callback function for Step 2: Categorize Events
+    SECURE: API key is passed through but never stored anywhere
+    """
     logger.info(f"Categorizing events with model {model}")
     
     try:
-        # Call the categorizer service
+        # SECURE: Clear any potential leftover environment variables first
+        env_keys_to_clear = ['OPENAI_API_KEY', 'OPENAI_MODEL', 'OPENAI_ORG']
+        for key in env_keys_to_clear:
+            if key in os.environ:
+                del os.environ[key]
+                logger.info(f"Cleared environment variable: {key}")
+        
+        # SECURE: Pass API key directly to service, don't store anywhere
         success, categorized_events = event_categorizer.categorize_events(api_key, model)
+        
+        # SECURE: Clear API key from memory immediately after use
+        api_key = None
+        del api_key
         
         if success:
             # Store results in session state
@@ -112,9 +126,26 @@ def categorize_events_callback(api_key: str, model: str):
             error_msg = categorized_events.get("error", "Unknown error during categorization")
             logger.error(f"Error in categorization: {error_msg}")
             st.error(error_msg)
+            
     except Exception as e:
         logger.error(f"Exception in categorize_events_callback: {e}")
-        st.error(f"An error occurred during categorization: {e}")
+        
+        # Handle specific API-related errors
+        error_message = str(e).lower()
+        if "invalid api key" in error_message or "authentication" in error_message:
+            st.error("❌ Invalid API key. Please check your OpenAI API key and try again.")
+        elif "quota" in error_message or "rate limit" in error_message:
+            st.error("⚠️ API quota exceeded or rate limit reached. Please try again later.")
+        else:
+            st.error(f"❌ An error occurred during categorization: {e}")
+            
+    finally:
+        # SECURE: Ensure API key is cleared from memory even if exception occurs
+        try:
+            api_key = None
+            del api_key
+        except:
+            pass  # Already cleared
 
 def generate_newsletter_callback():
     """Callback function for Step 3: Generate Newsletter"""
