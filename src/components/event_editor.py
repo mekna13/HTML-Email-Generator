@@ -44,7 +44,6 @@ class EventEditor:
         # Summary tab (first and default)
         with summary_tab:
             self._render_summary(events_data)
-            self._render_validation_results(events_data)
         
         # Edit CTE events
         with cte_tab:
@@ -348,7 +347,7 @@ class EventEditor:
             st.success("🎉 All events have complete information!")
         else:
             missing_count = total_events - total_complete
-            st.warning(f"⚠️ {missing_count} events need attention.")
+            st.info(f"ℹ️ {missing_count} events have optional fields that could be filled in.")
         
         # Show date range
         if events_data.get("date_range"):
@@ -356,7 +355,7 @@ class EventEditor:
             st.info(f"📅 Date Range: {date_range.get('start_date')} to {date_range.get('end_date')}")
         
         # Show detailed breakdown
-        st.subheader("📋 Detailed Breakdown")
+        st.subheader("📋 Event List")
         
         # Create summary table
         summary_data = []
@@ -369,97 +368,17 @@ class EventEditor:
                     "Type": event_type,
                     "Event Name": self._truncate_text(event.get('event_name', 'Unnamed Event'), 50),
                     "Date": event.get('event_date', ''),
-                    "Facilitators": "✅" if 'event_facilitators' in event and event.get('event_facilitators') else "❌",
-                    "Description": "✅" if 'event_description' in event and event.get('event_description') else "❌",
-                    "Registration": "✅" if 'event_registration_link' in event and event.get('event_registration_link') else "❌",
-                    "Status": "✅ Complete" if not missing_fields else f"⚠️ Missing: {', '.join(missing_fields)}"
+                    "Facilitators": "✅" if 'event_facilitators' in event and event.get('event_facilitators') else "—",
+                    "Description": "✅" if 'event_description' in event and event.get('event_description') else "—",
+                    "Registration": "✅" if 'event_registration_link' in event and event.get('event_registration_link') else "—",
+                    "Status": "✅ Complete" if not missing_fields else f"Optional: {', '.join(missing_fields)}"
                 })
         
         if summary_data:
             df = pd.DataFrame(summary_data)
             st.dataframe(df, use_container_width=True)
-    
-    def _render_validation_results(self, events_data: Dict[str, Any]):
-        """Render validation results for the events data"""
-        try:
-            from utils.event_validator import EventValidator
             
-            st.subheader("🔍 Data Quality Check")
-            
-            validator = EventValidator()
-            is_valid, issues = validator.validate_events_data(events_data)
-            summary = validator.get_validation_summary(issues)
-            
-            # Display validation summary
-            if is_valid:
-                st.success("✅ Data validation passed! No critical issues found.")
-            else:
-                st.error("❌ Data validation failed! Critical issues found that must be resolved.")
-            
-            # Show summary metrics
-            col1, col2, col3, col4 = st.columns(4)
-            
-            with col1:
-                st.metric("Total Issues", summary["total_issues"])
-            
-            with col2:
-                st.metric("Critical", summary["critical"])
-            
-            with col3:
-                st.metric("Warnings", summary["warning"])
-            
-            with col4:
-                st.metric("Info", summary["info"])
-            
-            # Show detailed issues if any exist
-            if issues and summary["total_issues"] > 0:
-                with st.expander("📋 View Detailed Issues"):
-                    # Filter options
-                    severity_filter = st.selectbox(
-                        "Filter by severity:",
-                        ["All", "Critical", "Warning", "Info"],
-                        key="severity_filter"
-                    )
-                    
-                    filtered_issues = issues
-                    if severity_filter != "All":
-                        filtered_issues = [i for i in issues if i["severity"].lower() == severity_filter.lower()]
-                    
-                    if filtered_issues:
-                        # Display issues in a table
-                        issue_data = []
-                        for issue in filtered_issues:
-                            severity_icon = {
-                                "critical": "🔴",
-                                "warning": "🟡", 
-                                "info": "🔵"
-                            }.get(issue["severity"], "⚪")
-                            
-                            issue_data.append({
-                                "Severity": f"{severity_icon} {issue['severity'].title()}",
-                                "Type": issue["type"].title(),
-                                "Location": issue["location"],
-                                "Message": issue["message"]
-                            })
-                        
-                        st.dataframe(issue_data, use_container_width=True)
-                        
-                        # Show recommendations
-                        if summary["critical"] > 0:
-                            st.error("🚨 **Critical issues must be resolved before proceeding to categorization.**")
-                        
-                        if summary["warning"] > 0:
-                            st.warning("⚠️ **Warning issues should be reviewed and fixed when possible.**")
-                        
-                        if summary["info"] > 0:
-                            st.info("ℹ️ **Info issues are suggestions for improving data quality.**")
-                    else:
-                        st.write("No issues found for the selected filter.")
-            else:
-                st.success("🎉 No validation issues found!")
-                
-        except ImportError:
-            st.warning("⚠️ Event validation not available - validator module not found")
+        st.info("ℹ️ Events with missing optional fields (Facilitators, Description, Registration) can still be used for newsletter generation.")
     
     def _get_missing_fields(self, event: Dict[str, Any]) -> List[str]:
         """Get list of missing optional fields for an event (simplified logic)"""

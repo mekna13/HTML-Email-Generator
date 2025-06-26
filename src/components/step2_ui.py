@@ -38,13 +38,6 @@ class Step2UI:
                 help="Your API key will only be used temporarily for categorization and will not be stored.",
                 placeholder="sk-..."
             )
-            if not api_key:
-                api_key = st.text_input("OpenAI API Key (for event categorization)", 
-                                      type="password", 
-                                      help="Required for LLM-based event categorization. Will be stored as an environment variable for this session only.")
-                if api_key:
-                    os.environ["OPENAI_API_KEY"] = api_key
-                    logger.info("OpenAI API key provided")
             
             # Option to select model
             model_options = ["gpt-3.5-turbo", "gpt-4"]
@@ -125,7 +118,7 @@ class Step2UI:
             else:
                 st.write("No CTE event categories found.")
                 logger.info("No CTE categories to display")
-            
+             
             # Show categorized ELP events
             st.subheader("ELP Events Categories")
             elp_categories = categorized_events.get("elp_events", [])

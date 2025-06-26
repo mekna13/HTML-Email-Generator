@@ -78,19 +78,9 @@ class Step1UI:
                         st.rerun()
                 
                 with col2:
-                    # Button to proceed to step 2 - with validation
+                    # Button to proceed to step 2 - without validation
                     if st.button("✅ Approve Events and Proceed to Categorization", type="primary", use_container_width=True):
-                        # Validate data before proceeding
-                        from utils.event_validator import EventValidator
-                        validator = EventValidator()
-                        is_valid, issues = validator.validate_events_data(st.session_state.events_data)
-                        
-                        critical_issues = [i for i in issues if i["severity"] == "critical"]
-                        
-                        if critical_issues:
-                            st.error(f"❌ Cannot proceed: {len(critical_issues)} critical issues found. Please review the Summary tab for details.")
-                        else:
-                            logger.info("User approved events and proceeded to step 2")
-                            st.session_state.step2_complete = False  # Make sure step 2 starts fresh
-                            st.success("✅ Validation passed! Proceeding to categorization...")
-                            st.rerun()
+                        logger.info("User approved events and proceeded to step 2")
+                        st.session_state.step2_complete = False  # Make sure step 2 starts fresh
+                        st.success("✅ Proceeding to categorization...")
+                        st.rerun()
