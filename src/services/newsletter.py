@@ -404,6 +404,9 @@ class NewsletterGenerator:
         event_link = event.get('event_link', '')
         event_date = event.get('event_date', '')
         event_time = event.get('event_time', '')
+        # Ensure AM/PM is uppercase
+        if isinstance(event_time, str):
+            event_time = event_time.replace('am', ' AM').replace('pm', ' PM')
         event_location = event.get('event_location', '')
         event_facilitators = event.get('event_facilitators', '')
         event_description = event.get('event_description', '')
