@@ -358,23 +358,43 @@ class NewsletterGenerator:
     
     def _category_template(self, category_name: str, category_description: str) -> str:
         """Generate HTML for category title and description"""
-        return f"""
-                            <div align="center">
-                                <table border="0" cellspacing="0" cellpadding="0" width="600" style="width:6.25in;color:inherit;font-size:inherit">
-                                    <tbody>
-                                        <tr>
-                                            <td style="padding:7.5pt 0in 11.25pt 0in">
-                                                <p>
-                                                    <b><span style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{category_name}
-                                                       </span></b><span style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">
-                                                        {category_description}</span><u></u><u></u>
-                                                </p>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-        """
+        # If category_name is "Additional Events", do not include category_description
+        if category_name.strip().lower() == "additional events":
+            category_name = category_name + ":"
+            return f"""
+                    <div align="center">
+                    <table border="0" cellspacing="0" cellpadding="0" width="600" style="width:6.25in;color:inherit;font-size:inherit">
+                        <tbody>
+                        <tr>
+                            <td style="padding:7.5pt 0in 11.25pt 0in">
+                            <p>
+                                <b><span style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{category_name}
+                                   </span></b><u></u><u></u>
+                            </p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+            """
+        else:
+            return f"""
+                    <div align="center">
+                    <table border="0" cellspacing="0" cellpadding="0" width="600" style="width:6.25in;color:inherit;font-size:inherit">
+                        <tbody>
+                        <tr>
+                            <td style="padding:7.5pt 0in 11.25pt 0in">
+                            <p>
+                                <b><span style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">{category_name}
+                                   </span></b><span style="font-size:10.0pt;font-family:&quot;Open Sans&quot;,sans-serif;color:#500000">
+                                {category_description}</span><u></u><u></u>
+                            </p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+            """
     
     def _event_template(self, event: Dict[str, Any]) -> str:
         """Generate HTML for an individual event with HTML calendar icon"""

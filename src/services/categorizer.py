@@ -128,7 +128,7 @@ class EventCategorizer:
                 
                 # Generate descriptions for new regular categories
                 for category_name, events in new_categories:
-                    if description_llm:
+                    if description_llm and category_name != "Additional Events":
                         description = self._generate_description_with_llm(category_name, events, description_llm)
                     else:
                         description = f"A series of events focused on {category_name}."
@@ -367,7 +367,7 @@ class EventCategorizer:
             3. Remove dates from category names (e.g., "Series (May 2025)" becomes "Series")
             4. Create between 1-5 categories total with clear, descriptive names
             5. Only create new categories if events don't fit into existing ones
-            6. Events that don't belong to any series can be grouped into "Additional Events"
+            6. Events that don't belong to any series can be grouped into "Additional Events", which does not need to have a description
 
             KEY PRINCIPLE: Similar content does NOT automatically mean same series - look for explicit naming patterns, not just topic similarity.
 
@@ -391,8 +391,7 @@ class EventCategorizer:
                 "description": ""
                 }},
                 {{
-                "category_name": "Additional Events",
-                "description": ""
+                "category_name": "Additional Events"
                 }}
             ],
             "event_assignments": {{
