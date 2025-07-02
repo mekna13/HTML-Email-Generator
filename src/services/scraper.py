@@ -123,52 +123,55 @@ class EventScraper:
             # If there's an error in parsing, exclude the event to be safe
             logger.warning(f"Could not parse date '{event_date}': {e}")
             return False
-    
-    def _scrape_events_from_url(self, url: str, start_date: date, end_date: date) -> List[Dict[str, Any]]:
-        """Scrape events from a specified URL within the date range"""
+    def _get_chrome_options_and_service(self):
+        """Get Chrome options and service based on the current platform"""
+        import platform
+        import shutil
+        import os
         
-        # Set up Chrome options for Streamlit Cloud (Linux/Debian environment)
         chrome_options = Options()
         
-        # Essential options for headless Chrome in Linux containers
-        chrome_options.add_argument("--headless=new")  # Use new headless mode
-        chrome_options.add_argument("--no-sandbox")  # Critical for containerized environments
-        chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
-        chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration
-        chrome_options.add_argument("--disable-web-security")
-        chrome_options.add_argument("--disable-features=VizDisplayCompositor")
-        chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument("--disable-plugins")
-        chrome_options.add_argument("--window-size=1920,1080")
-        chrome_options.add_argument("--start-maximized")
-        chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-        chrome_options.add_argument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+        # Detect the platform
+        system = platform.system().lower()
+        logger.info(f"Detected platform: {system}")
         
-        # Memory and process management for limited resources
-        chrome_options.add_argument("--memory-pressure-off")
-        chrome_options.add_argument("--max_old_space_size=4096")
-        chrome_options.add_argument("--single-process")  # Use single process mode
-        chrome_options.add_argument("--disable-background-timer-throttling")
-        chrome_options.add_argument("--disable-renderer-backgrounding")
-        chrome_options.add_argument("--disable-backgrounding-occluded-windows")
-        
-        # Additional options for better compatibility with your packages
-        chrome_options.add_argument("--remote-debugging-port=9222")
-        chrome_options.add_argument("--disable-setuid-sandbox")
-        chrome_options.add_argument("--disable-software-rasterizer")
-        
-        # Initialize the driver
-        driver = None
-        try:
-            import shutil
-            import os
+        if system == "linux":
+            # Linux/Debian environment (Streamlit Cloud)
+            logger.info("Configuring Chrome for Linux/Debian environment")
             
-            # Set display for xvfb (matches your packages.txt)
+            # Essential options for headless Chrome in Linux containers
+            chrome_options.add_argument("--headless=new")  # Use new headless mode
+            chrome_options.add_argument("--no-sandbox")  # Critical for containerized environments
+            chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+            chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration
+            chrome_options.add_argument("--disable-web-security")
+            chrome_options.add_argument("--disable-features=VizDisplayCompositor")
+            chrome_options.add_argument("--disable-extensions")
+            chrome_options.add_argument("--disable-plugins")
+            chrome_options.add_argument("--window-size=1920,1080")
+            chrome_options.add_argument("--start-maximized")
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+            chrome_options.add_argument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            
+            # Memory and process management for limited resources
+            chrome_options.add_argument("--memory-pressure-off")
+            chrome_options.add_argument("--max_old_space_size=4096")
+            chrome_options.add_argument("--single-process")  # Use single process mode
+            chrome_options.add_argument("--disable-background-timer-throttling")
+            chrome_options.add_argument("--disable-renderer-backgrounding")
+            chrome_options.add_argument("--disable-backgrounding-occluded-windows")
+            
+            # Additional options for better compatibility
+            chrome_options.add_argument("--remote-debugging-port=9222")
+            chrome_options.add_argument("--disable-setuid-sandbox")
+            chrome_options.add_argument("--disable-software-rasterizer")
+            
+            # Set display for xvfb (matches packages.txt)
             if 'DISPLAY' not in os.environ:
                 os.environ['DISPLAY'] = ':99'
                 logger.info("Set DISPLAY environment variable for xvfb")
             
-            # Try to use system Chrome/Chromium first (matching your packages.txt)
+            # Try to use system Chrome/Chromium first (matching packages.txt)
             chrome_path = shutil.which("chromium") or shutil.which("chromium-browser") or shutil.which("google-chrome")
             chromedriver_path = shutil.which("chromium-driver") or shutil.which("chromedriver")
             
@@ -185,8 +188,65 @@ class EventScraper:
             else:
                 logger.info("System chromedriver not found, using ChromeDriverManager")
                 service = Service(ChromeDriverManager().install())
+        
+        elif system == "darwin":
+            # macOS environment
+            logger.info("Configuring Chrome for macOS environment")
             
-            # Initialize the driver
+            # Basic options for macOS
+            chrome_options.add_argument("--headless=new")
+            chrome_options.add_argument("--disable-gpu")
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--window-size=1920,1080")
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+            chrome_options.add_argument("--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            
+            # Use ChromeDriverManager for automatic driver management
+            logger.info("Using ChromeDriverManager for macOS")
+            service = Service(ChromeDriverManager().install())
+        
+        elif system == "windows":
+            # Windows environment
+            logger.info("Configuring Chrome for Windows environment")
+            
+            # Basic options for Windows
+            chrome_options.add_argument("--headless=new")
+            chrome_options.add_argument("--disable-gpu")
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--window-size=1920,1080")
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+            chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            
+            # Use ChromeDriverManager for automatic driver management
+            logger.info("Using ChromeDriverManager for Windows")
+            service = Service(ChromeDriverManager().install())
+        
+        else:
+            # Unknown system - use safe defaults
+            logger.warning(f"Unknown platform: {system}. Using safe default configuration.")
+            
+            chrome_options.add_argument("--headless=new")
+            chrome_options.add_argument("--disable-gpu")
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--window-size=1920,1080")
+            
+            # Use ChromeDriverManager as fallback
+            service = Service(ChromeDriverManager().install())
+        
+        return chrome_options, service
+    
+    def _scrape_events_from_url(self, url: str, start_date: date, end_date: date) -> List[Dict[str, Any]]:
+        """Scrape events from a specified URL within the date range"""
+        
+        # Get platform-specific Chrome configuration
+        chrome_options, service = self._get_chrome_options_and_service()
+        
+        # Initialize the driver
+        driver = None
+        try:
             logger.info("Initializing Chrome driver...")
             driver = webdriver.Chrome(service=service, options=chrome_options)
             logger.info(f"Successfully initialized Chrome driver, loading: {url}")
@@ -325,7 +385,6 @@ class EventScraper:
                     logger.info("Chrome driver closed successfully")
                 except Exception as e:
                     logger.warning(f"Error closing driver: {e}")
-    
     def _get_event_details(self, driver, event: Dict[str, Any]) -> Dict[str, Any]:
         """Visit the event detail page and extract additional information"""
         try:

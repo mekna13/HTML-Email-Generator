@@ -4,6 +4,8 @@ import time
 import logging
 import os
 from typing import Dict, List, Any, Optional, Tuple
+import gspread
+from google.oauth2.service_account import Credentials
 
 # LangChain imports
 from langchain_openai import ChatOpenAI
@@ -14,15 +16,245 @@ logger = logging.getLogger("tamu_newsletter")
 
 class EventCategorizer:
     """
-    Service class to handle event categorization functionality
+    Service class to handle event categorization functionality with Google Sheets caching
     """
     
     def __init__(self):
-        """Initialize the event categorizer"""
-        self.descriptions_file = "category_descriptions.json"
-        self.categorization_cache_file = "categorization_cache.json"
-        self.weekly_descriptions_file = "weekly_category_descriptions.json"
-        self.weekly_categorization_cache_file = "weekly_categorization_cache.json"
+        """Initialize the event categorizer with Google Sheets integration"""
+        # Google Sheets configuration
+        self.spreadsheet_name = "TAMU Newsletter Cache v2"
+        self.sheets_config = {
+            "category_descriptions": "Category Descriptions",
+            "categorization_cache": "Categorization Cache", 
+            "weekly_descriptions": "Weekly Descriptions",
+            "weekly_categorization_cache": "Weekly Cache"
+        }
+        
+        # Initialize Google Sheets client
+        self.gc = None
+        self.spreadsheet = None
+        self._initialize_sheets_client()
+    
+    def _initialize_sheets_client(self):
+        """Initialize Google Sheets client with service account credentials"""
+        try:
+            # Define the scope
+            scope = [
+                'https://www.googleapis.com/auth/spreadsheets',
+                'https://www.googleapis.com/auth/drive'
+            ]
+            
+            # Get credentials from Streamlit secrets
+            import streamlit as st
+            credentials_dict = dict(st.secrets["gcp_service_account"])
+            credentials = Credentials.from_service_account_info(credentials_dict, scopes=scope)
+            logger.info("Using credentials from Streamlit secrets")
+            
+            # Initialize the client
+            self.gc = gspread.authorize(credentials)
+            
+            # Try to open existing spreadsheet or create new one
+            try:
+                self.spreadsheet = self.gc.open(self.spreadsheet_name)
+                logger.info(f"Opened existing spreadsheet: {self.spreadsheet_name}")
+            except gspread.SpreadsheetNotFound:
+                logger.info(f"Creating new spreadsheet: {self.spreadsheet_name}")
+                self.spreadsheet = self.gc.create(self.spreadsheet_name)
+                # Make it accessible to editors
+                self.spreadsheet.share('', perm_type='anyone', role='writer')
+            
+            # Ensure all required sheets exist
+            self._ensure_sheets_exist()
+            
+        except Exception as e:
+            logger.error(f"Failed to initialize Google Sheets client: {e}")
+            raise Exception(f"Google Sheets setup failed: {e}")
+    
+    def _ensure_sheets_exist(self):
+        """Ensure all required sheets exist in the spreadsheet"""
+        existing_sheets = [sheet.title for sheet in self.spreadsheet.worksheets()]
+        
+        for sheet_key, sheet_name in self.sheets_config.items():
+            if sheet_name not in existing_sheets:
+                logger.info(f"Creating sheet: {sheet_name}")
+                new_sheet = self.spreadsheet.add_worksheet(title=sheet_name, rows="1000", cols="10")
+                
+                # Set up headers based on sheet type
+                if sheet_key == "category_descriptions":
+                    new_sheet.update('A1:B1', [['Category Name', 'Description']])
+                elif sheet_key == "categorization_cache":
+                    new_sheet.update('A1:C1', [['Event Type', 'Category Name', 'Event Titles']])
+                elif sheet_key == "weekly_descriptions":
+                    new_sheet.update('A1:C1', [['Category Name', 'Description', 'Weekly Event Info']])
+                elif sheet_key == "weekly_categorization_cache":
+                    new_sheet.update('A1:B1', [['Cache Key', 'Event Data']])
+    
+    def _get_sheet(self, sheet_key: str):
+        """Get a specific sheet by key"""
+        sheet_name = self.sheets_config.get(sheet_key)
+        return self.spreadsheet.worksheet(sheet_name)
+    
+    def _load_category_descriptions(self) -> Dict[str, str]:
+        """Load existing category descriptions from Google Sheets"""
+        sheet = self._get_sheet("category_descriptions")
+        records = sheet.get_all_records()
+        
+        descriptions = {}
+        for record in records:
+            category_name = record.get('Category Name', '').strip()
+            description = record.get('Description', '').strip()
+            if category_name and description:
+                descriptions[category_name] = description
+        
+        logger.info(f"Loaded {len(descriptions)} category descriptions from Google Sheets")
+        return descriptions
+    
+    def _save_category_descriptions(self, descriptions: Dict[str, str]) -> bool:
+        """Save category descriptions to Google Sheets"""
+        sheet = self._get_sheet("category_descriptions")
+        
+        # Clear existing data (except headers)
+        sheet.clear()
+        sheet.update('A1:B1', [['Category Name', 'Description']])
+        
+        # Prepare data for batch update
+        data = [[category_name, description] for category_name, description in descriptions.items()]
+        
+        if data:
+            range_name = f'A2:B{len(data) + 1}'
+            sheet.update(range_name, data)
+        
+        logger.info(f"Saved {len(descriptions)} category descriptions to Google Sheets")
+        return True
+    
+    def _load_categorization_history(self) -> Dict[str, Dict[str, List[str]]]:
+        """Load categorization history from Google Sheets"""
+        sheet = self._get_sheet("categorization_cache")
+        records = sheet.get_all_records()
+        
+        history = {"CTE": {}, "ELP": {}}
+        for record in records:
+            event_type = record.get('Event Type', '').strip()
+            category_name = record.get('Category Name', '').strip()
+            event_titles_str = record.get('Event Titles', '').strip()
+            
+            if event_type in ['CTE', 'ELP'] and category_name and event_titles_str:
+                try:
+                    event_titles = json.loads(event_titles_str)
+                    history[event_type][category_name] = event_titles
+                except json.JSONDecodeError:
+                    # Fallback: split by newlines
+                    event_titles = [title.strip() for title in event_titles_str.split('\n') if title.strip()]
+                    history[event_type][category_name] = event_titles
+        
+        logger.info(f"Loaded categorization history from Google Sheets")
+        return history
+    
+    def _save_categorization_history(self, history: Dict[str, Dict[str, List[str]]]) -> bool:
+        """Save categorization history to Google Sheets"""
+        sheet = self._get_sheet("categorization_cache")
+        
+        # Clear existing data (except headers)
+        sheet.clear()
+        sheet.update('A1:C1', [['Event Type', 'Category Name', 'Event Titles']])
+        
+        # Prepare data for batch update
+        data = []
+        for event_type, categories in history.items():
+            if event_type in ['CTE', 'ELP']:
+                for category_name, event_titles in categories.items():
+                    event_titles_str = json.dumps(event_titles)
+                    data.append([event_type, category_name, event_titles_str])
+        
+        if data:
+            range_name = f'A2:C{len(data) + 1}'
+            sheet.update(range_name, data)
+        
+        logger.info(f"Saved categorization history to Google Sheets")
+        return True
+    
+    def _load_weekly_category_descriptions(self) -> Dict[str, Dict[str, str]]:
+        """Load existing weekly category descriptions from Google Sheets"""
+        sheet = self._get_sheet("weekly_descriptions")
+        records = sheet.get_all_records()
+        
+        descriptions = {}
+        for record in records:
+            category_name = record.get('Category Name', '').strip()
+            description = record.get('Description', '').strip()
+            weekly_event_info = record.get('Weekly Event Info', '').strip()
+            
+            if category_name:
+                descriptions[category_name] = {
+                    "description": description,
+                    "weekly_event_info": weekly_event_info
+                }
+        
+        logger.info(f"Loaded {len(descriptions)} weekly category descriptions from Google Sheets")
+        return descriptions
+    
+    def _save_weekly_category_descriptions(self, descriptions: Dict[str, Dict[str, str]]) -> bool:
+        """Save weekly category descriptions to Google Sheets"""
+        sheet = self._get_sheet("weekly_descriptions")
+        
+        # Clear existing data (except headers)
+        sheet.clear()
+        sheet.update('A1:C1', [['Category Name', 'Description', 'Weekly Event Info']])
+        
+        # Prepare data for batch update
+        data = []
+        for category_name, desc_data in descriptions.items():
+            description = desc_data.get("description", "")
+            weekly_event_info = desc_data.get("weekly_event_info", "")
+            data.append([category_name, description, weekly_event_info])
+        
+        if data:
+            range_name = f'A2:C{len(data) + 1}'
+            sheet.update(range_name, data)
+        
+        logger.info(f"Saved {len(descriptions)} weekly category descriptions to Google Sheets")
+        return True
+    
+    def _load_weekly_categorization_cache(self) -> Dict[str, Any]:
+        """Load cached weekly categorization results from Google Sheets"""
+        sheet = self._get_sheet("weekly_categorization_cache")
+        records = sheet.get_all_records()
+        
+        cache = {}
+        for record in records:
+            cache_key = record.get('Cache Key', '').strip()
+            event_data_str = record.get('Event Data', '').strip()
+            
+            if cache_key and event_data_str:
+                try:
+                    event_data = json.loads(event_data_str)
+                    cache[cache_key] = event_data
+                except json.JSONDecodeError:
+                    logger.warning(f"Could not parse event data for cache key: {cache_key}")
+        
+        logger.info(f"Loaded {len(cache)} weekly categorization cache entries from Google Sheets")
+        return cache
+    
+    def _save_weekly_categorization_cache(self, cache: Dict[str, Any]) -> bool:
+        """Save weekly categorization results to Google Sheets cache"""
+        sheet = self._get_sheet("weekly_categorization_cache")
+        
+        # Clear existing data (except headers)
+        sheet.clear()
+        sheet.update('A1:B1', [['Cache Key', 'Event Data']])
+        
+        # Prepare data for batch update
+        data = []
+        for cache_key, event_data in cache.items():
+            event_data_str = json.dumps(event_data)
+            data.append([cache_key, event_data_str])
+        
+        if data:
+            range_name = f'A2:B{len(data) + 1}'
+            sheet.update(range_name, data)
+        
+        logger.info(f"Saved {len(cache)} weekly categorization cache entries to Google Sheets")
+        return True
     
     def categorize_events(self, api_key: str, model: str = "gpt-3.5-turbo", debug_mode: bool = False) -> Tuple[bool, Dict[str, Any]]:
         """
@@ -37,9 +269,6 @@ class EventCategorizer:
             Tuple of (success, categorized_events_data)
         """
         logger.info(f"Starting event categorization with model: {model}")
-        
-        
-        # Always run directly now - no subprocess needed
         return self._categorize_direct(api_key, model)
     
     def _categorize_direct(self, api_key: str, model: str) -> Tuple[bool, Dict[str, Any]]:
@@ -109,8 +338,6 @@ class EventCategorizer:
                         new_categories.append((category["category_name"], category["events"]))
             
             for weekly_event in weekly_events:
-                # Only generate descriptions for weekly events that don't have cached descriptions
-                # and still have the events array (meaning they weren't loaded from cache)
                 if (weekly_event["category_name"] not in stored_weekly_descriptions and 
                     "events" in weekly_event):
                     new_weekly_categories.append(weekly_event)
@@ -218,49 +445,8 @@ class EventCategorizer:
             del api_key
             return (False, {"error": f"Error during categorization: {str(e)}"})
     
-    def _load_categorization_history(self) -> Dict[str, Dict[str, List[str]]]:
-        """
-        Load categorization history from cache file
-        
-        Returns:
-            Dictionary with structure: {"CTE": {"Category Name": ["Event Title 1", "Event Title 2"]}, "ELP": {...}}
-        """
-        if os.path.exists(self.categorization_cache_file):
-            try:
-                with open(self.categorization_cache_file, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception as e:
-                logger.error(f"Error loading categorization history: {e}")
-        
-        # Return empty structure if file doesn't exist or can't be loaded
-        return {"CTE": {}, "ELP": {}}
-    
-    def _save_categorization_history(self, history: Dict[str, Dict[str, List[str]]]) -> bool:
-        """
-        Save categorization history to cache file
-        
-        Args:
-            history: Dictionary with structure {"CTE": {"Category Name": ["Event Title 1"]}, "ELP": {...}}
-            
-        Returns:
-            True if successful, False otherwise
-        """
-        try:
-            with open(self.categorization_cache_file, "w", encoding="utf-8") as f:
-                json.dump(history, f, indent=2)
-            return True
-        except Exception as e:
-            logger.error(f"Error saving categorization history: {e}")
-            return False
-    
     def _update_categorization_history(self, categorized_cte: List[Dict[str, Any]], categorized_elp: List[Dict[str, Any]]) -> None:
-        """
-        Update the categorization history with newly categorized events
-        
-        Args:
-            categorized_cte: List of CTE categories with events
-            categorized_elp: List of ELP categories with events
-        """
+        """Update the categorization history with newly categorized events"""
         # Load existing history
         history = self._load_categorization_history()
         
@@ -293,15 +479,7 @@ class EventCategorizer:
         logger.info("Updated categorization history with new events")
     
     def _format_categorization_history_for_prompt(self, history: Dict[str, List[str]]) -> str:
-        """
-        Format categorization history for inclusion in LLM prompt
-        
-        Args:
-            history: Dictionary mapping category names to lists of event titles
-            
-        Returns:
-            Formatted string for prompt
-        """
+        """Format categorization history for inclusion in LLM prompt"""
         if not history:
             return "No previous categorization history available."
         
@@ -316,18 +494,7 @@ class EventCategorizer:
         return "\n".join(formatted_lines) if formatted_lines else "No previous categorization history available."
     
     def _categorize_events_with_llm_context(self, events: List[Dict[str, Any]], event_type: str, llm: ChatOpenAI, history: Dict[str, List[str]]) -> List[Dict[str, Any]]:
-        """
-        Use LLM to categorize events with historical context
-        
-        Args:
-            events: List of event objects
-            event_type: String indicating "CTE" or "ELP" events
-            llm: Initialized LangChain LLM
-            history: Historical categorization data for this event type
-            
-        Returns:
-            Categorized events structure
-        """
+        """Use LLM to categorize events with historical context"""
         if not events or len(events) == 0:
             logger.info(f"No {event_type} events to categorize")
             return []
@@ -337,7 +504,6 @@ class EventCategorizer:
         # Format events for the prompt
         formatted_events = []
         for i, event in enumerate(events):
-            # Extract relevant fields for categorization
             name = event.get("event_name", "")
             description = event.get("event_description", "")
             date = event.get("event_date", "")
@@ -456,31 +622,13 @@ class EventCategorizer:
         
         except Exception as e:
             logger.error(f"Error in LLM categorization: {e}")
-            logger.info("Falling back to basic categorization")
-            
-            # Simple fallback categorization
-            category_obj = {
-                "category_name": f"{event_type} Events",
-                "description": "",
-                "events": events.copy()
-            }
-            
-            return [category_obj]
+            # Don't fallback - let it fail properly
+            raise Exception(f"LLM categorization failed for {event_type} events: {str(e)}")
     
     def _shorten_event_description_with_llm(self, original_description: str, llm: ChatOpenAI) -> str:
-        """
-        Shorten and clean up event description using LLM
+        """Shorten and clean up event description using LLM"""
+        import time as time_module
         
-        Args:
-            original_description: Original event description from scraper
-            llm: Initialized LangChain LLM
-            
-        Returns:
-            Shortened and cleaned description
-        """
-        import time as time_module  # Import with alias to avoid conflicts
-        
-        # Skip processing if description is already short or empty
         if not original_description or len(original_description) <= 200:
             return original_description
         
@@ -507,27 +655,15 @@ class EventCategorizer:
         try:
             response = llm.invoke(formatted_prompt)
             shortened_description = response.content.strip()
-            
-            # Clean up the response to remove quotes and unwanted formatting
             shortened_description = self._clean_llm_response(shortened_description)
-            
-            time_module.sleep(0.5)  # Rate limiting with explicit module reference
+            time_module.sleep(0.5)
             return shortened_description
         except Exception as e:
             logger.error(f"Error shortening event description: {e}")
-            # Fallback: return first 200 characters if LLM fails
             return original_description[:200] + "..." if len(original_description) > 200 else original_description
     
     def _separate_weekly_events(self, events: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
-        """
-        Separate weekly events from regular events
-        
-        Args:
-            events: List of events
-            
-        Returns:
-            Tuple of (regular_events, weekly_events_grouped)
-        """
+        """Separate weekly events from regular events"""
         regular_events = []
         weekly_events_raw = []
         
@@ -551,23 +687,14 @@ class EventCategorizer:
             weekly_events_grouped.append({
                 "category_name": name,
                 "events": group,
-                "event_link": group[0]["event_link"],  # Use first event's link
-                "event_registration_link": group[0]["event_registration_link"]  # Use first event's registration
+                "event_link": group[0]["event_link"],
+                "event_registration_link": group[0]["event_registration_link"]
             })
         
         return regular_events, weekly_events_grouped
     
     def _process_weekly_events(self, weekly_event_groups: List[Dict[str, Any]], llm: ChatOpenAI) -> List[Dict[str, Any]]:
-        """
-        Process weekly events into the required structure with caching support
-        
-        Args:
-            weekly_event_groups: List of weekly event groups
-            llm: LLM instance for processing
-            
-        Returns:
-            List of processed weekly events
-        """
+        """Process weekly events into the required structure with caching support"""
         processed_weekly_events = []
         
         # Load weekly categorization cache
@@ -609,15 +736,7 @@ class EventCategorizer:
         return processed_weekly_events
     
     def _get_weekly_event_cache_key(self, weekly_group: Dict[str, Any]) -> str:
-        """
-        Generate a cache key for weekly events based on event name and instances
-        
-        Args:
-            weekly_group: Weekly event group data
-            
-        Returns:
-            Cache key string
-        """
+        """Generate a cache key for weekly events based on event name and instances"""
         # Use event name and count of instances as key
         event_name = weekly_group["category_name"]
         event_count = len(weekly_group["events"])
@@ -637,38 +756,9 @@ class EventCategorizer:
         schedule_hash = f"{len(days)}days_{len(times)}times"
         return f"{event_name}|{event_count}|{schedule_hash}"
     
-    def _load_weekly_categorization_cache(self) -> Dict[str, Any]:
-        """Load cached weekly categorization results"""
-        if os.path.exists(self.weekly_categorization_cache_file):
-            try:
-                with open(self.weekly_categorization_cache_file, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception as e:
-                logger.error(f"Error loading weekly categorization cache: {e}")
-        return {}
-    
-    def _save_weekly_categorization_cache(self, cache: Dict[str, Any]) -> bool:
-        """Save weekly categorization results to cache"""
-        try:
-            with open(self.weekly_categorization_cache_file, "w", encoding="utf-8") as f:
-                json.dump(cache, f, indent=2)
-            return True
-        except Exception as e:
-            logger.error(f"Error saving weekly categorization cache: {e}")
-            return False
-    
     def _generate_weekly_description_with_llm(self, weekly_event: Dict[str, Any], llm: ChatOpenAI) -> str:
-        """
-        Generate a description for a weekly event using LLM
-        
-        Args:
-            weekly_event: Weekly event data
-            llm: Initialized LangChain LLM
-            
-        Returns:
-            Generated description
-        """
-        import time as time_module  # Import with alias to avoid conflicts
+        """Generate a description for a weekly event using LLM"""
+        import time as time_module
         
         template = """
         Create an engaging 4-line description for a weekly academic event series at Texas A&M University.
@@ -705,28 +795,16 @@ class EventCategorizer:
         try:
             response = llm.invoke(formatted_prompt)
             description = response.content.strip()
-            
-            # Clean up the response to remove quotes and unwanted formatting
             description = self._clean_llm_response(description)
-            
-            time_module.sleep(1)  # Rate limiting with explicit module reference
+            time_module.sleep(1)
             return description
         except Exception as e:
             logger.error(f"Error generating weekly description: {e}")
             return f"A weekly series focused on {weekly_event['category_name']}."
     
     def _generate_weekly_info_with_llm(self, weekly_event: Dict[str, Any], llm: ChatOpenAI) -> str:
-        """
-        Generate weekly event info (schedule and facilitators) using LLM
-        
-        Args:
-            weekly_event: Weekly event data
-            llm: Initialized LangChain LLM
-            
-        Returns:
-            Generated weekly info
-        """
-        import time as time_module  # Import with alias to avoid conflicts
+        """Generate weekly event info (schedule and facilitators) using LLM"""
+        import time as time_module
         
         # Extract schedule and facilitator information
         events = weekly_event["events"]
@@ -781,35 +859,12 @@ class EventCategorizer:
         try:
             response = llm.invoke(formatted_prompt)
             weekly_info = response.content.strip()
-            
-            # Clean up the response to remove quotes and unwanted formatting
             weekly_info = self._clean_llm_response(weekly_info)
-            
-            time_module.sleep(1)  # Rate limiting with explicit module reference
+            time_module.sleep(1)
             return weekly_info
         except Exception as e:
             logger.error(f"Error generating weekly info: {e}")
             return "Schedule and facilitator information available upon registration."
-    
-    def _load_weekly_category_descriptions(self) -> Dict[str, Dict[str, str]]:
-        """Load existing weekly category descriptions from JSON file"""
-        if os.path.exists(self.weekly_descriptions_file):
-            try:
-                with open(self.weekly_descriptions_file, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception as e:
-                logger.error(f"Error loading weekly category descriptions: {e}")
-        return {}
-    
-    def _save_weekly_category_descriptions(self, descriptions: Dict[str, Dict[str, str]]) -> bool:
-        """Save weekly category descriptions to JSON file"""
-        try:
-            with open(self.weekly_descriptions_file, "w", encoding="utf-8") as f:
-                json.dump(descriptions, f, indent=2)
-            return True
-        except Exception as e:
-            logger.error(f"Error saving weekly category descriptions: {e}")
-            return False
     
     def _load_events_data(self, file_path: str = "events.json") -> Optional[Dict[str, Any]]:
         """Load events data from JSON file"""
@@ -820,26 +875,6 @@ class EventCategorizer:
         except Exception as e:
             logger.error(f"Error loading events data: {e}")
             return None
-    
-    def _load_category_descriptions(self) -> Dict[str, str]:
-        """Load existing category descriptions from JSON file"""
-        if os.path.exists(self.descriptions_file):
-            try:
-                with open(self.descriptions_file, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception as e:
-                logger.error(f"Error loading category descriptions: {e}")
-        return {}
-    
-    def _save_category_descriptions(self, descriptions: Dict[str, str]) -> bool:
-        """Save category descriptions to JSON file"""
-        try:
-            with open(self.descriptions_file, "w", encoding="utf-8") as f:
-                json.dump(descriptions, f, indent=2)
-            return True
-        except Exception as e:
-            logger.error(f"Error saving category descriptions: {e}")
-            return False
     
     def _initialize_llm(self, api_key: str, model: str, temperature: float = 0.1) -> Optional[ChatOpenAI]:
         """Initialize the LangChain LLM"""
@@ -855,18 +890,7 @@ class EventCategorizer:
             return None
     
     def _generate_description_with_llm(self, category_name: str, events: List[Dict[str, Any]], llm: ChatOpenAI) -> str:
-        """
-        Generate a description for a category using LLM
-        
-        Args:
-            category_name: Name of the category
-            events: List of events in this category
-            llm: Initialized LangChain LLM
-            
-        Returns:
-            Generated description
-        """
-        # Create prompt template for description generation
+        """Generate a description for a category using LLM"""
         template = """
         Create an engaging 3-4 line description for a category of academic events at Texas A&M University.
         
@@ -889,7 +913,7 @@ class EventCategorizer:
         
         # Format event descriptions for context
         event_texts = []
-        for event in events[:3]:  # Limit to first 3 events to keep prompt reasonable
+        for event in events[:3]:  # Limit to first 3 events
             name = event.get("event_name", "")
             desc = event.get("event_description", "")
             
@@ -912,28 +936,15 @@ class EventCategorizer:
         try:
             response = llm.invoke(formatted_prompt)
             description = response.content.strip()
-            
-            # Clean up the response to remove quotes and unwanted formatting
-            
             description = self._clean_llm_response(description)
-            # Add some delay to avoid rate limits
             time.sleep(1)
-            
             return description
         except Exception as e:
             logger.error(f"Error generating description: {e}")
             return f"A series of events focused on {category_name}."
         
     def _clean_llm_response(self, response_text: str) -> str:
-        """
-        Clean up LLM response text by removing unwanted quotes and formatting
-        
-        Args:
-            response_text: Raw response from LLM
-            
-        Returns:
-            Cleaned response text
-        """
+        """Clean up LLM response text by removing unwanted quotes and formatting"""
         if not response_text:
             return response_text
         
@@ -969,3 +980,10 @@ class EventCategorizer:
         cleaned = cleaned.strip()
         
         return cleaned
+
+    def get_spreadsheet_url(self) -> str:
+        """Get the URL of the Google Sheets cache"""
+        if hasattr(self, 'spreadsheet') and self.spreadsheet:
+            return self.spreadsheet.url
+        else:
+            return None

@@ -1,0 +1,221 @@
+{
+  "date_range": {
+    "start_date": "2025-07-21",
+    "end_date": "2025-07-31"
+  },
+  "cte_events": [
+    {
+      "category_name": "AI in Education Workshops",
+      "description": "Discover the cutting-edge intersection of AI and education at our AI in Education Workshops. Learn how AI can revolutionize classroom assignments, exam item development, and pedagogy. Join us to gain valuable insights, enhance your teaching practices, and stay ahead in the evolving educational landscape. Faculty and staff, don't miss this opportunity to explore the limitless possibilities of AI in education!",
+      "events": [
+        {
+          "event_name": "GSPDT | Reimagining Assignments: A Partnership Between Instructor And Artificial Intelligence",
+          "event_link": "https://calendar.tamu.edu/cte/event/354648-gspdt-reimagining-assignments-a-partnership-between-i",
+          "event_date": "Thursday, July 24, 2025",
+          "event_time": "11:00am - 12:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Reem Hussein, Center for Teaching Excellence\nKelli Adam, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44842",
+          "event_description": "Explore the transformative potential of AI in education at our workshop. Learn the value of integrating AI into classroom assignments, effective adaptation methods, and practical examples to foster critical thinking. This session aims to equip educators with tools and insights to enhance student engagement and learning outcomes through AI integration."
+        },
+        {
+          "event_name": "Reimagining Assignments: A Partnership Between Instructor And Artificial Intelligence",
+          "event_link": "https://calendar.tamu.edu/cte/event/353498-reimagining-assignments-a-partnership-between",
+          "event_date": "Thursday, July 24, 2025",
+          "event_time": "1:00pm - 2:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Reem Hussein, Center for Teaching Excellence\nKelli Adam, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44842",
+          "event_description": "This workshop focuses on the transformative potential of AI in education. It will equip educators with strategies to integrate AI into classroom assignments and on methods to adapt these assignments, with practical examples that promote critical thinking. The goal is to enhance student engagement and learning outcomes through effective AI integration."
+        },
+        {
+          "event_name": "Leaning On Generative AI And Pedagogy To Develop Exam Items",
+          "event_link": "https://calendar.tamu.edu/cte/event/353499-leaning-on-generative-ai-and-pedagogy-to-develop-exam",
+          "event_date": "Thursday, July 24, 2025",
+          "event_time": "2:00pm - 3:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Jean Layne, Center for Teaching Excellence\nCarlos Perez, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44812",
+          "event_description": "This session will focus on enhancing the quality of exam items by leveraging generative AI. We will explore current practices for exam development and strategies for utilizing AI to create questions across various cognitive levels and formats. The goal is to equip participants with the knowledge to generate high-quality, pedagogically-aligned exam items and effectively evaluate and adapt AI-generated questions."
+        },
+        {
+          "event_name": "AI Tools To Help Boost Classroom Engagement",
+          "event_link": "https://calendar.tamu.edu/cte/event/353507-ai-tools-to-help-boost-classroom-engagement",
+          "event_date": "Thursday, July 31, 2025",
+          "event_time": "1:00pm - 2:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Reem Hussein, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44807",
+          "event_description": "This workshop offers practical skills on utilizing Generative AI tools to enhance classroom engagement. Discover dynamic and interactive teaching methods through exploration of AI tools such as Notebook LM and HeyGen, designed to captivate and engage students effectively."
+        }
+      ]
+    },
+    {
+      "category_name": "Additional Events",
+      "description": "A series of events focused on Additional Events.",
+      "events": [
+        {
+          "event_name": "Introducing Gemini, Google\u2019S AI Model",
+          "event_link": "https://calendar.tamu.edu/cte/event/353500-introducing-gemini-googles-ai-model",
+          "event_date": "Thursday, July 24, 2025",
+          "event_time": "10:00am - 11:00am CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Carlos Perez, Center for Teaching Excellence\nDr. Armanto Sutedjo, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?ScheduleId=44781",
+          "event_description": "This workshop offers an introduction to Gemini, Google's advanced AI, focusing on its unique features and how it differs from other generative AI tools. Participants will explore the application of Gemini in content creation, assessment design, and the development of interactive learning experiences, while considering potential uses within their own teaching contexts."
+        },
+        {
+          "event_name": "Creating Accessible Content With Word And PowerPoint Files",
+          "event_link": "https://calendar.tamu.edu/cte/event/353505-creating-accessible-content-with-word-and",
+          "event_date": "Thursday, July 31, 2025",
+          "event_time": "1:00pm - 2:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Carlos Perez, Center for Teaching Excellence\nDr. Jamie Thompson, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44808",
+          "event_description": "This workshop provides hands-on experience in enhancing digital content accessibility to meet Title II revisions. Participants will learn to identify and rectify common accessibility issues in Microsoft Word and PowerPoint using built-in accessibility checkers and effective formatting strategies. The session aids in ensuring documents meet accessibility standards."
+        },
+        {
+          "event_name": "Syllabus: Tool For Instructor & Student Success",
+          "event_link": "https://calendar.tamu.edu/cte/event/353504-syllabus-tool-for-instructor-student-success",
+          "event_date": "Thursday, July 31, 2025",
+          "event_time": "2:00pm - 3:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Jean Layne, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44809",
+          "event_description": "This session focuses on syllabus design and its impact on student success. Participants will learn to identify syllabus requirements, use component alignment, and adjust language and tone for learner benefit. The session will also cover strategies for enriching the syllabus and creating a supportive and policy-compliant document."
+        }
+      ]
+    },
+    {
+      "category_name": "GMA Series",
+      "description": "Immerse yourself in the GMA Series at Texas A&M University, a curated selection of enriching academic events. From assessing understanding to supporting well-being, these experiences are tailored to enhance your professional development. Join us to broaden your knowledge, improve your skills, and engage with our vibrant intellectual community. Sign up today to start your remarkable learning journey!",
+      "events": [
+        {
+          "event_name": "GMA | Assessing Understanding ",
+          "event_link": "https://calendar.tamu.edu/cte/event/354510-gma-assessing-understanding-monday-july-21-1130am-100",
+          "event_date": "Monday, July 21, 2025",
+          "event_time": "11:30am - 1:00pm CDT",
+          "event_location": "Zoom",
+          "event_registration_link": "https://gradconnect.tamu.edu/register/?id=248f0e4e-5432-46d7-89e0-0d537999e6de"
+        },
+        {
+          "event_name": "GMA | Supporting Well-Being ",
+          "event_link": "https://calendar.tamu.edu/cte/event/354511-gma-supporting-well-being-wednesday-july-23-1000-1130",
+          "event_date": "Wednesday, July 23, 2025",
+          "event_time": "10:00am - 11:30am CDT",
+          "event_location": "Zoom",
+          "event_registration_link": "https://gradconnect.tamu.edu/register/?id=adebfec6-0074-405c-9be8-a15d6687c834"
+        }
+      ]
+    },
+    {
+      "category_name": "Course Design Series",
+      "description": "Join us for our Course Design Series at Texas A&M University, where we dive into the essential elements of effective course design. From designing assessments to creating engaging learning experiences, attendees will gain valuable insights and strategies to enhance student learning outcomes. Don't miss out on this opportunity to elevate your teaching practices and make a lasting impact in the classroom!",
+      "events": [
+        {
+          "event_name": "Course Design Series: Session 2 - Designing Assessments",
+          "event_link": "https://calendar.tamu.edu/cte/event/353495-course-design-series-session-2-designing",
+          "event_date": "Tuesday, July 22, 2025",
+          "event_time": "2:00pm - 3:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Jean Layne, Center for Teaching Excellence\nCarlos Perez, Center for Teaching Excellence\nDr. Armanto Sutedjo, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44802",
+          "event_description": "Immerse yourself in an exploration of how assessments can enhance skill development and foster deep learning. Discover the balance between formative and summative assessments for providing timely, actionable feedback and active learner engagement. Learn about diverse assessment tools available in Canvas and enhance your course alignment map."
+        },
+        {
+          "event_name": "Course Design Series: Session 3 - Creating Learning Experiences",
+          "event_link": "https://calendar.tamu.edu/cte/event/353502-course-design-series-session-3-creating-learning",
+          "event_date": "Tuesday, July 29, 2025",
+          "event_time": "2:00pm - 3:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Jean Layne, Center for Teaching Excellence\nCarlos Perez, Center for Teaching Excellence\nDr. Armanto Sutedjo, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44806",
+          "event_description": "Explore strategies for engaging students and promoting deep learning. This workshop covers key concepts such as accountability, relevance, transparency, sequencing, and feedback. Participants will learn to select new learning experiences for courses, generate approaches balancing learner needs, and understand the components of course design. Examples are provided for both traditional and digital classrooms."
+        }
+      ]
+    },
+    {
+      "category_name": "Digital Accessibility Series",
+      "description": "Join us for the Digital Accessibility Series, where you'll learn how to make your online content more accessible to all users. From assessing understanding to utilizing Canvas tools, these sessions provide valuable insights and tools to enhance your digital presence. Don't miss out on this opportunity to improve your digital accessibility skills and make a positive impact on your students and colleagues. Register now and be a part of creating an inclusive online environment at Texas A&M University!",
+      "events": [
+        {
+          "event_name": "Digital Accessibility Series \u2013 Session 4: Utilizing Canvas To Check For Content Accessibility",
+          "event_link": "https://calendar.tamu.edu/cte/event/353496-digital-accessibility-series-session-4-utilizing",
+          "event_date": "Wednesday, July 23, 2025",
+          "event_time": "1:00pm - 1:45pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Carlos Perez, Center for Teaching Excellence\nDr. Jamie Thompson, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/register.aspx?scheduleid=44803",
+          "event_description": "Join our Digital Accessibility Series to advance your understanding of the Title II revision, which requires digital content to meet accessibility standards. Learn to effectively use Canvas's accessibility checker to identify and rectify issues within your course materials. Gain skills in interpreting the Ally report and applying its recommendations to enhance the overall accessibility of your materials."
+        }
+      ]
+    }
+  ],
+  "elp_events": [
+    {
+      "category_name": "Academic Communication Skills Series",
+      "description": "Enhance your teaching skills and keep your students safe in the lab with our Academic Communication Skills Series. Learn key linguistic and pedagogical techniques to lead lab classes effectively and create a positive learning environment. Sign up now to improve your communication skills and excel in your role as a laboratory teaching assistant at Texas A&M University!",
+      "events": [
+        {
+          "event_name": "Academic Communication Skills: Leading A Lab Class (Part 1)",
+          "event_link": "https://calendar.tamu.edu/elp/event/354434-academic-communication-skills-leading-a-lab-class-par",
+          "event_date": "Friday, July 25, 2025",
+          "event_time": "9:00am - 10:00am CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Ginessa Payne, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/8332",
+          "event_description": "This workshop, designed for laboratory teaching assistants, offers instruction in effective communication of safety protocols, monitoring student engagement, and addressing confusion. Participants will gain strategies to respond to student inquiries and enhance listening comprehension. The focus is on anticipating instructional needs, confidently initiating interactions with undergraduates, and using appropriate assertiveness in student guidance."
+        },
+        {
+          "event_name": "Academic Communication Skills: Leading A Lab Class (Part 2)",
+          "event_link": "https://calendar.tamu.edu/elp/event/354467-academic-communication-skills-leading-a-lab-class-par",
+          "event_date": "Friday, July 25, 2025",
+          "event_time": "10:15am - 11:15am CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Ginessa Payne, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/8333",
+          "event_description": "This workshop focuses on enhancing the pedagogical and communication skills of laboratory teaching assistants, particularly in safety protocols and student engagement. Participants will learn to effectively address student confusion, navigate unpredictable situations, and confidently interact with undergraduates. The session also provides strategies for assertive communication and effective responses to complex student queries."
+        }
+      ]
+    },
+    {
+      "category_name": "Communication Strategies",
+      "description": "Enhance your communication skills and connect with students from around the world with our Communication Strategies events. Join us to learn invaluable techniques for effective cross-cultural communication and teaching. Don't miss this opportunity to expand your teaching toolkit and create a more inclusive and engaging classroom environment. Sign up now and take your communication skills to the next level!",
+      "events": [
+        {
+          "event_name": "Communication Strategies For International Instructors",
+          "event_link": "https://calendar.tamu.edu/elp/event/354471-communication-strategies-for-international-instructor",
+          "event_date": "Tuesday, July 29, 2025",
+          "event_time": "12:00pm - 1:00pm CDT",
+          "event_location": "Zoom",
+          "event_facilitators": "Ginessa Payne, Center for Teaching Excellence",
+          "event_registration_link": "https://ers.tamu.edu/event/8326",
+          "event_description": "This informational session is designed for current or future teaching assistants with non-North American English as their primary language. It focuses on utilizing personal strengths, understanding language proficiency requirements, and enhancing classroom communication skills through available resources. Participants will practice handling complex student interactions and learn about the employment conditions for TAs."
+        }
+      ]
+    }
+  ],
+  "weekly_events": [
+    {
+      "category_name": "Microteaching Practice (English Language Proficiency)",
+      "description": "Join us for an exciting weekly academic event series at Texas A&M University focused on honing English language proficiency through microteaching practice. Participants will have the opportunity to improve teaching and public speaking skills in a supportive and constructive environment. Don't miss out on this valuable opportunity to enhance your communication abilities and engage with a community of dedicated educators. Sign up now and take your professional development to the next level!",
+      "event_link": "https://calendar.tamu.edu/elp/event/354398-microteaching-practice-english-language",
+      "event_registration_link": "https://ers.tamu.edu/event/8325",
+      "weekly_event_info": "Join the Microteaching Practice (English Language Proficiency) sessions on Mondays at 8:30am-9:30am CDT and Wednesdays at 10:00am-11:00am CDT, facilitated by Ginessa Payne and Michele Vick from the Center for Teaching Excellence."
+    },
+    {
+      "category_name": "ELP Journal Club: A Conversation Circle For Text-Based Discussions",
+      "description": "Join the ELP Journal Club at Texas A&M University for engaging text-based discussions that enhance your communication skills and critical thinking abilities. This series provides a supportive environment for faculty and staff to practice reading aloud, leading discussions, and collaborating on scholarly articles. Expand your knowledge, build confidence, and connect with a community of like-minded professionals. Elevate your academic experience and sign up for this enriching weekly event today!",
+      "event_link": "https://calendar.tamu.edu/elp/event/354408-elp-journal-club-a-conversation-circle-for",
+      "event_registration_link": "https://ers.tamu.edu/event/10889",
+      "weekly_event_info": "Join the ELP Journal Club for text-based discussions every Monday at 11:00am - 12:00pm CDT with facilitator Michele Vick from the Center for Teaching Excellence."
+    },
+    {
+      "category_name": "Conversation Circle For English Language Proficiency",
+      "description": "Join us at Texas A&M University's Conversation Circle for an enriching experience in improving English language proficiency. Engage in lively discussions on cultural topics to enhance your speaking skills, active listening, and conversational fluency. This weekly series offers a supportive environment for faculty and staff to hone their communication abilities and connect with a diverse community. Elevate your language skills and cultural awareness with us at Conversation Circle!",
+      "event_link": "https://calendar.tamu.edu/elp/event/354420-conversation-circle-for-english-language",
+      "event_registration_link": "https://ers.tamu.edu/event/7534",
+      "weekly_event_info": "Join the Conversation Circle for English Language Proficiency sessions: Tuesdays 8:00am (Virtual), Wednesdays 1:00pm in BLOCKER 236 A, and Thursdays 9:00am (Virtual). Facilitators: Michele Vick and Sarah Vargas from the Center for Teaching Excellence."
+    }
+  ]
+}

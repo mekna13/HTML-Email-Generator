@@ -2,20 +2,115 @@
 import json
 import logging
 from typing import Dict, List, Any, Optional, Tuple
+import gspread
+from google.oauth2.service_account import Credentials
 
 # Get logger
 logger = logging.getLogger("tamu_newsletter")
 
 class NewsletterGenerator:
     """
-    Service class to handle newsletter generation functionality
+    Service class to handle newsletter generation functionality with Google Sheets integration
     """
     
     def __init__(self):
-        """Initialize the newsletter generator"""
+        """Initialize the newsletter generator with Google Sheets integration"""
         self.categorized_events_path = "categorized_events.json"
-        self.categorization_cache_path = "categorization_cache.json"
         self.newsletter_output_path = "newsletter.html"
+        
+        # Google Sheets configuration (same as categorizer)
+        self.spreadsheet_name = "TAMU Newsletter Cache"
+        self.sheets_config = {
+            "categorization_cache": "Categorization Cache"
+        }
+        
+        # Initialize Google Sheets client
+        self.gc = None
+        self.spreadsheet = None
+        self._initialize_sheets_client()
+    
+    def _initialize_sheets_client(self):
+        """Initialize Google Sheets client with service account credentials"""
+        try:
+            # Define the scope
+            scope = [
+                'https://www.googleapis.com/auth/spreadsheets',
+                'https://www.googleapis.com/auth/drive'
+            ]
+            
+            # Get credentials from Streamlit secrets
+            import streamlit as st
+            credentials_dict = dict(st.secrets["gcp_service_account"])
+            credentials = Credentials.from_service_account_info(credentials_dict, scopes=scope)
+            logger.info("Using credentials from Streamlit secrets")
+            
+            # Initialize the client
+            self.gc = gspread.authorize(credentials)
+            
+            # Try to open existing spreadsheet
+            try:
+                self.spreadsheet = self.gc.open(self.spreadsheet_name)
+                logger.info(f"Opened existing spreadsheet: {self.spreadsheet_name}")
+            except gspread.SpreadsheetNotFound:
+                logger.warning(f"Spreadsheet '{self.spreadsheet_name}' not found. Newsletter generation will continue without cache.")
+                self.spreadsheet = None
+            
+        except Exception as e:
+            logger.warning(f"Failed to initialize Google Sheets client: {e}")
+            logger.info("Newsletter generation will continue without Google Sheets cache")
+            self.gc = None
+            self.spreadsheet = None
+    
+    def _get_sheet(self, sheet_key: str):
+        """Get a specific sheet by key"""
+        if not self.spreadsheet:
+            return None
+            
+        sheet_name = self.sheets_config.get(sheet_key)
+        if not sheet_name:
+            return None
+            
+        try:
+            return self.spreadsheet.worksheet(sheet_name)
+        except gspread.WorksheetNotFound:
+            logger.warning(f"Sheet not found: {sheet_name}")
+            return None
+    
+    def _load_categorization_cache_from_sheets(self) -> Dict[str, Dict[str, List[str]]]:
+        """Load categorization cache from Google Sheets"""
+        if not self.spreadsheet:
+            logger.warning("No Google Sheets connection available")
+            return {"CTE": {}, "ELP": {}}
+        
+        try:
+            sheet = self._get_sheet("categorization_cache")
+            if not sheet:
+                logger.warning("Categorization cache sheet not found")
+                return {"CTE": {}, "ELP": {}}
+            
+            records = sheet.get_all_records()
+            cache = {"CTE": {}, "ELP": {}}
+            
+            for record in records:
+                event_type = record.get('Event Type', '').strip()
+                category_name = record.get('Category Name', '').strip()
+                event_titles_str = record.get('Event Titles', '').strip()
+                
+                if event_type in ['CTE', 'ELP'] and category_name and event_titles_str:
+                    try:
+                        event_titles = json.loads(event_titles_str)
+                        cache[event_type][category_name] = event_titles
+                    except json.JSONDecodeError:
+                        # Fallback: split by newlines
+                        event_titles = [title.strip() for title in event_titles_str.split('\n') if title.strip()]
+                        cache[event_type][category_name] = event_titles
+            
+            logger.info(f"Loaded categorization cache from Google Sheets: {len(cache['CTE'])} CTE categories, {len(cache['ELP'])} ELP categories")
+            return cache
+            
+        except Exception as e:
+            logger.error(f"Error loading categorization cache from Google Sheets: {e}")
+            return {"CTE": {}, "ELP": {}}
     
     def generate_newsletter(self, debug_mode: bool = False) -> Tuple[bool, str]:
         """
@@ -35,11 +130,6 @@ class NewsletterGenerator:
             error_msg = f"Categorized events file not found: {self.categorized_events_path}"
             logger.error(error_msg)
             return (False, error_msg)
-            
-        if not os.path.exists(self.categorization_cache_path):
-            error_msg = f"Categorization cache file not found: {self.categorization_cache_path}"
-            logger.error(error_msg)
-            return (False, error_msg)
         
         # Always run directly now - no subprocess needed
         return self._generate_direct()
@@ -54,11 +144,14 @@ class NewsletterGenerator:
         logger.info("Running newsletter generation directly with integrated functionality")
         
         try:
+            # Load categorization cache from Google Sheets
+            categorization_cache = self._load_categorization_cache_from_sheets()
+            
             # Generate HTML content
             logger.info("Generating HTML content")
             html_content = self._generate_email_html(
                 self.categorized_events_path, 
-                self.categorization_cache_path
+                categorization_cache
             )
             
             # Save the newsletter to file
@@ -121,14 +214,11 @@ class NewsletterGenerator:
         
         return distributed_content
     
-    def _generate_email_html(self, categorized_events_path: str, categorization_cache_path: str) -> str:
+    def _generate_email_html(self, categorized_events_path: str, categorization_cache: Dict[str, Dict[str, List[str]]]) -> str:
         """Generate the complete HTML newsletter"""
         # Load the JSON data
         with open(categorized_events_path, 'r') as f:
             categorized_events = json.load(f)
-        
-        with open(categorization_cache_path, 'r') as f:
-            categorization_cache = json.load(f)
         
         # Extract data
         date_range = categorized_events.get('date_range', {})
@@ -137,6 +227,7 @@ class NewsletterGenerator:
         weekly_events = categorized_events.get('weekly_events', [])
         
         logger.info(f"Processing {len(cte_events)} CTE categories, {len(elp_events)} ELP categories, {len(weekly_events)} weekly events")
+        logger.info(f"Categorization cache contains: {len(categorization_cache.get('CTE', {}))} CTE categories, {len(categorization_cache.get('ELP', {}))} ELP categories")
         
         # Start building the HTML
         html = """<!DOCTYPE html>
@@ -536,8 +627,6 @@ class NewsletterGenerator:
                 
         except Exception as e:
             # Log the error but don't break the template
-            import logging
-            logger = logging.getLogger("tamu_newsletter")
             logger.warning(f"Error parsing date '{event_date}': {e}")
         
         # Fallback to generic calendar icon
