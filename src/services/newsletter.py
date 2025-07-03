@@ -282,7 +282,7 @@ class NewsletterGenerator:
         
         # Process CTE events with distributed weekly events
         for item in cte_distributed:
-            if item["type"] == "regular":
+            if item["type"] == "regular" and item["data"]["category_name"] != "Additional Events":
                 category = item["data"]
                 category_name = category.get('category_name', '')
                 category_description = category.get('description', '')
@@ -302,7 +302,16 @@ class NewsletterGenerator:
                 weekly_event = item["data"]
                 html += self._weekly_event_template(weekly_event)
                 html += self._separator_template()
-        
+
+        # NOW process any "Additional Events" categories for CTE (at the end)
+        for item in cte_distributed:
+            if item["type"] == "regular" and item["data"]["category_name"] == "Additional Events":
+                category = item["data"]
+                html += self._category_template(category["category_name"], category.get("description", ""))
+                for event in category.get("events", []):
+                    html += self._event_template(event)
+                html += self._separator_template()
+
         # Add ELP banner before ELP events
         html += """
                             <table border="0" cellspacing="0" cellpadding="0" width="600" style="width:6.25in;color:inherit;font-size:inherit">

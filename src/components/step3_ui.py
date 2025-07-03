@@ -66,24 +66,32 @@ class Step3UI:
                     unsafe_allow_html=True
                 )
             
-            # Download button for the newsletter
-            st.download_button(
-                label="Download Newsletter HTML",
-                data=st.session_state.html_content,
-                file_name="tamu_cte_newsletter.html",
-                mime="text/html"
-            )
-            
-            # Provide instructions on using the newsletter
-            st.info("""
-            ### How to Use This Newsletter
-            
-            1. Download the HTML file using the button above
-            2. You can send this HTML file directly as an email in many email clients
-            3. For mass mailings, you can upload this template to your email marketing system
-            4. For testing, you can open the downloaded file in any web browser
-            """)
-            
+            # Download buttons section
+            st.subheader("Download Newsletter")
+
+            # Create two columns for the download buttons
+            col1, col2 = st.columns(2)
+
+            with col1:
+                # HTML download button
+                st.download_button(
+                    label="📄 Download as HTML",
+                    data=st.session_state.html_content,
+                    file_name="tamu_cte_newsletter.html",
+                    mime="text/html",
+                    use_container_width=True
+                )
+
+            with col2:
+                # TXT download button - save HTML content as text file
+                st.download_button(
+                    label="📝 Download HTML as TXT",
+                    data=st.session_state.html_content,
+                    file_name="tamu_cte_newsletter.txt",
+                    mime="text/plain",
+                    use_container_width=True
+                )
+                
             # Option to restart generation
             if st.button("Regenerate Newsletter"):
                 logger.info("User requested to regenerate newsletter")

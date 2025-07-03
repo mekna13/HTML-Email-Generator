@@ -158,11 +158,11 @@ class Step2UI:
                 st.session_state.step2_complete = False
                 st.rerun()
             
-            # Button to proceed to Step 3
-            if not st.session_state.step3_complete:
-                if st.button("Approve Categories and Generate Newsletter"):
-                    logger.info("User approved categories and proceeding to step 3")
-                    st.rerun()
+            # # Button to proceed to Step 3
+            # if not st.session_state.step3_complete:
+            #     if st.button("Approve Categories and Generate Newsletter"):
+            #         logger.info("User approved categories and proceeding to step 3")
+            #         st.rerun()
     
     def _display_weekly_events(self, categorized_events: Dict[str, Any]):
         """Display weekly events section"""

@@ -77,10 +77,10 @@ class Step1UI:
                         st.session_state.step1_complete = False
                         st.rerun()
                 
-                with col2:
-                    # Button to proceed to step 2 - without validation
-                    if st.button("✅ Approve Events and Proceed to Categorization", type="primary", use_container_width=True):
-                        logger.info("User approved events and proceeded to step 2")
-                        st.session_state.step2_complete = False  # Make sure step 2 starts fresh
-                        st.success("✅ Proceeding to categorization...")
-                        st.rerun()
+                # with col2:
+                #     # Button to proceed to step 2 - without validation
+                #     if st.button("✅ Approve Events and Proceed to Categorization", type="primary", use_container_width=True):
+                #         logger.info("User approved events and proceeded to step 2")
+                #         st.session_state.step2_complete = False  # Make sure step 2 starts fresh
+                #         st.success("✅ Proceeding to categorization...")
+                #         st.rerun()
