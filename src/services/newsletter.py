@@ -19,7 +19,7 @@ class NewsletterGenerator:
         self.newsletter_output_path = "newsletter.html"
         
         # Google Sheets configuration (same as categorizer)
-        self.spreadsheet_name = "TAMU Newsletter Cache"
+        self.spreadsheet_name = "TAMU Newsletter Cache v3"
         self.sheets_config = {
             "categorization_cache": "Categorization Cache"
         }

@@ -22,7 +22,7 @@ class EventCategorizer:
     def __init__(self):
         """Initialize the event categorizer with Google Sheets integration"""
         # Google Sheets configuration
-        self.spreadsheet_name = "TAMU Newsletter Cache v2"
+        self.spreadsheet_name = "TAMU Newsletter Cache v3"
         self.sheets_config = {
             "category_descriptions": "Category Descriptions",
             "categorization_cache": "Categorization Cache", 
