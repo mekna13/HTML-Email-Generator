@@ -256,7 +256,7 @@ class EventCategorizer:
         logger.info(f"Saved {len(cache)} weekly categorization cache entries to Google Sheets")
         return True
     
-    def categorize_events(self, api_key: str, model: str = "gpt-3.5-turbo", debug_mode: bool = False) -> Tuple[bool, Dict[str, Any]]:
+    def categorize_events(self, api_key: str, provider: str = "openwebui",debug_mode: bool = False) -> Tuple[bool, Dict[str, Any]]:
         """
         Categorize events using LLM
         
@@ -268,10 +268,10 @@ class EventCategorizer:
         Returns:
             Tuple of (success, categorized_events_data)
         """
-        logger.info(f"Starting event categorization with model: {model}")
-        return self._categorize_direct(api_key, model)
+        logger.info(f"Starting event categorization with model: {provider}")
+        return self._categorize_direct(api_key, provider)
     
-    def _categorize_direct(self, api_key: str, model: str) -> Tuple[bool, Dict[str, Any]]:
+    def _categorize_direct(self, api_key: str, provider: str) -> Tuple[bool, Dict[str, Any]]:
         """
         Run categorization directly with integrated functionality
         
@@ -300,7 +300,7 @@ class EventCategorizer:
             
             # Initialize LLM for categorization (very low temperature)
             logger.info("Initializing LLM for categorization...")
-            categorization_llm = self._initialize_llm(api_key, model, temperature=0.1)
+            categorization_llm = self._initialize_llm(api_key, provider, temperature=0.1)
             if not categorization_llm:
                 raise Exception("Failed to initialize LLM. Cannot proceed with categorization.")
             
@@ -349,7 +349,7 @@ class EventCategorizer:
             description_llm = None
             if new_categories or new_weekly_categories:
                 logger.info("Initializing LLM for generating new descriptions...")
-                description_llm = self._initialize_llm(api_key, model, temperature=0.7)
+                description_llm = self._initialize_llm(api_key, provider, temperature=0.7)
                 if not description_llm:
                     logger.warning("Failed to initialize LLM for descriptions. Using placeholders.")
                 
@@ -386,7 +386,7 @@ class EventCategorizer:
             # initialize it now for event description shortening
             if not description_llm:
                 logger.info("Initializing LLM for event description shortening...")
-                description_llm = self._initialize_llm(api_key, model, temperature=0.7)
+                description_llm = self._initialize_llm(api_key, provider, temperature=0.7)
             
             # Apply descriptions to categorized events and process individual event descriptions
             for category in categorized_cte + categorized_elp:
@@ -805,6 +805,7 @@ class EventCategorizer:
     def _generate_weekly_info_with_llm(self, weekly_event: Dict[str, Any], llm: ChatOpenAI) -> str:
         """Generate weekly event info (schedule and facilitators) using LLM"""
         import time as time_module
+        import streamlit as st
         
         # Extract schedule and facilitator information
         events = weekly_event["events"]
@@ -876,15 +877,33 @@ class EventCategorizer:
             logger.error(f"Error loading events data: {e}")
             return None
     
-    def _initialize_llm(self, api_key: str, model: str, temperature: float = 0.1) -> Optional[ChatOpenAI]:
+    def _initialize_llm(self, api_key: str, provider: str, temperature: float = 0.1) -> Optional[ChatOpenAI]:
         """Initialize the LangChain LLM"""
+        import streamlit as st
+        
+        DEFAULT_MODELS = {
+                "openai": "gpt-4o",
+                "openwebui": "protected.gpt-4o"
+        }
+
+        model = DEFAULT_MODELS.get(provider, "gpt-4o")
+
         try:
-            llm = ChatOpenAI(
-                model=model,
-                temperature=temperature,
-                api_key=api_key
-            )
-            return llm
+            if provider == "openai":
+                return ChatOpenAI(
+                    openai_api_key=api_key,
+                    model=model,
+                    temperature=temperature
+        )
+            elif provider == "openwebui":
+                openai_api_base = st.secrets["openwebui"]["api_base"]
+                return ChatOpenAI(
+                    openai_api_key=api_key,
+                    model=model,
+                    temperature=temperature,
+                    openai_api_base=openai_api_base,
+                )
+
         except Exception as e:
             logger.error(f"Error initializing LLM: {e}")
             return None

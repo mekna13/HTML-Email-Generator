@@ -91,7 +91,7 @@ def scrape_events_callback(start_date, end_date):
         logger.error(f"Exception in scrape_events_callback: {e}")
         st.error(f"An error occurred during scraping: {e}")
 
-def categorize_events_callback(api_key: str, model: str):
+def categorize_events_callback(api_key: str, model: str, provider: str = "openwebui"):
     """
     Callback function for Step 2: Categorize Events
     SECURE: API key is passed through but never stored anywhere
@@ -107,7 +107,7 @@ def categorize_events_callback(api_key: str, model: str):
                 logger.info(f"Cleared environment variable: {key}")
         
         # SECURE: Pass API key directly to service, don't store anywhere
-        success, categorized_events = event_categorizer.categorize_events(api_key, model)
+        success, categorized_events = event_categorizer.categorize_events(api_key, model, provider)
         
         # SECURE: Clear API key from memory immediately after use
         api_key = None

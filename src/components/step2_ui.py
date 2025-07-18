@@ -39,19 +39,14 @@ class Step2UI:
                 placeholder="sk-..."
             )
             
-            # Option to select model
-            model_options = ["gpt-3.5-turbo", "gpt-4"]
-            selected_model = st.selectbox("Select OpenAI Model", model_options, 
-                                        help="GPT-3.5 Turbo is faster and cheaper. GPT-4 may provide better categorization.")
-            
-            # Store selected model as environment variable
-            if selected_model:
-                os.environ["OPENAI_MODEL"] = selected_model
-                logger.info(f"Selected model: {selected_model}")
+            # Option to select provider
+            provider_options = ["openwebui", "openai"]
+            selected_provider = st.selectbox("Select Provider", provider_options,
+                                            help="Choose 'openwebui' to use TAMU AI chat resources or 'openai' if you want to use OpenAI's API directly.")
                         
             # Run categorization button - only enabled if API key is provided
-            if not api_key:
-                st.info("👆 Please enter your OpenAI API key above to enable categorization.")
+            if not api_key or not selected_provider:
+                st.info("👆 Please enter API key and select provider above to enable categorization.")
                 st.button("Run Event Categorization", disabled=True)
             else:
                 if st.button("Run Event Categorization", type="primary"):
@@ -60,12 +55,15 @@ class Step2UI:
                     # Validate API key format (basic check)
                     if not api_key.startswith("sk-") or len(api_key) < 20:
                         st.error("❌ Invalid API key format. OpenAI API keys start with 'sk-' and are much longer.")
+
+                    if selected_provider != "openwebui" and selected_provider != "openai":
+                        st.error("❌ Invalid provider selected. Please choose either 'openwebui' or 'openai'.")
                     else:
                         with st.spinner("Categorizing events... This may take a few minutes."):
                             # Call the categorize callback with API key
                             # SECURE: Pass API key directly, don't store anywhere
-                            self.categorize_callback(api_key, selected_model)
-                            
+                            self.categorize_callback(api_key, selected_provider)
+
                             # SECURE: Clear the API key from memory after use
                             api_key = None
                             del api_key
