@@ -163,8 +163,9 @@ class NewsletterGenerator:
             return (True, html_content)
             
         except Exception as e:
-            logger.error(f"Error during newsletter generation: {str(e)}")
+            logger.error(f"Error during newsletter generation: {str(e)}", exc_info=True)
             return (False, f"Error during newsletter generation: {str(e)}")
+        
     
     def _distribute_weekly_events(self, regular_categories: List[Dict], weekly_events: List[Dict]) -> List[Dict]:
         """
@@ -178,7 +179,7 @@ class NewsletterGenerator:
             List with weekly events distributed between regular categories
         """
         if not weekly_events:
-            return regular_categories
+            return [{"type": "regular", "data": event} for event in regular_categories]
         
         if not regular_categories:
             # If no regular categories, return weekly events as is
@@ -282,6 +283,7 @@ class NewsletterGenerator:
         
         # Process CTE events with distributed weekly events
         for item in cte_distributed:
+            print(item)  # Debugging line to check item structure
             if item["type"] == "regular" and item["data"]["category_name"] != "Additional Events":
                 category = item["data"]
                 category_name = category.get('category_name', '')
@@ -299,9 +301,12 @@ class NewsletterGenerator:
                 html += self._separator_template()
             
             elif item["type"] == "weekly":
-                weekly_event = item["data"]
-                html += self._weekly_event_template(weekly_event)
-                html += self._separator_template()
+                weekly_data = item["data"]
+                if isinstance(weekly_data, dict):
+                    weekly_data = [weekly_data]
+
+                for weekly_event in weekly_data:
+                    html += self._weekly_event_template(weekly_event)
 
         # NOW process any "Additional Events" categories for CTE (at the end)
         for item in cte_distributed:
@@ -333,6 +338,7 @@ class NewsletterGenerator:
         
         # Process ELP events with distributed weekly events
         for item in elp_distributed:
+            
             if item["type"] == "regular":
                 category = item["data"]
                 category_name = category.get('category_name', '')
